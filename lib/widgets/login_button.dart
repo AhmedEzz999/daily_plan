@@ -5,6 +5,20 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xff15B86C),
+        fixedSize: Size(MediaQuery.sizeOf(context).width, 50),
+      ),
+      child: const Text(
+        'Let’s Get Started',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 }

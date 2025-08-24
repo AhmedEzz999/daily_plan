@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import 'login_container.dart';
+
 class BodyLoginView extends StatelessWidget {
   const BodyLoginView({super.key});
 
@@ -39,6 +41,8 @@ class BodyLoginView extends StatelessWidget {
           width: 206,
           height: 216,
         ),
+        const SizedBox(height: 28),
+        const LoginContainer(),
       ],
     );
   }
