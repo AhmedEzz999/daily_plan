@@ -1,26 +1,44 @@
 import 'package:flutter/material.dart';
 
+import 'custom_snack_bar.dart';
 import 'login_button.dart';
 import 'login_form.dart';
 
-class LoginContainer extends StatelessWidget {
+class LoginContainer extends StatefulWidget {
   const LoginContainer({super.key});
 
   @override
+  State<LoginContainer> createState() => _LoginContainerState();
+}
+
+class _LoginContainerState extends State<LoginContainer> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isTyping = false;
+
+  @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
           child: Text(
             'Full Name',
             style: TextStyle(color: Colors.white, fontSize: 22),
           ),
         ),
-        SizedBox(height: 8),
-        LoginForm(),
-        SizedBox(height: 24),
-        LoginButton(),
+        const SizedBox(height: 8),
+        LoginForm(formKey: _formKey, isTyping: isTyping),
+        const SizedBox(height: 24),
+        LoginButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              customSnackBar(context, 'Valid Username');
+            }
+            setState(() {
+              isTyping = true;
+            });
+          },
+        ),
       ],
     );
   }
