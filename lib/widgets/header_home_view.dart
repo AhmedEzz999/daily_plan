@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../constants/constants.dart';
+
 class HeaderHomeView extends StatefulWidget {
   const HeaderHomeView({super.key});
 
@@ -16,6 +18,12 @@ class _HeaderHomeViewState extends State<HeaderHomeView> {
     setState(() {
       username = prefs.getString('username');
     });
+  }
+
+  Future<void> _removeUsername() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('username');
+    setState(() {});
   }
 
   @override
@@ -50,10 +58,16 @@ class _HeaderHomeViewState extends State<HeaderHomeView> {
           ),
         ),
         const SizedBox(width: 8),
-        const CircleAvatar(
-          backgroundColor: Color(0xff282828),
-          radius: 28,
-          child: Icon(Icons.wb_sunny_outlined, size: 36, color: Colors.white),
+        GestureDetector(
+          onTap: () {
+            _removeUsername();
+            Navigator.pushReplacementNamed(context, loginViewID);
+          },
+          child: const CircleAvatar(
+            backgroundColor: Color(0xff282828),
+            radius: 28,
+            child: Icon(Icons.wb_sunny_outlined, size: 36, color: Colors.white),
+          ),
         ),
       ],
     );
