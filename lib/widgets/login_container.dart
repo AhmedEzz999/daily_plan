@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
 import 'custom_snack_bar.dart';
 import 'login_button.dart';
 import 'login_form.dart';
@@ -30,9 +31,11 @@ class _LoginContainerState extends State<LoginContainer> {
         LoginForm(formKey: _formKey, isTyping: isTyping),
         const SizedBox(height: 24),
         LoginButton(
-          onPressed: () {
+          onPressed: () async {
             if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
               customSnackBar(context, 'Valid Username');
+              Navigator.pushReplacementNamed(context, homeViewID);
             }
             setState(() {
               isTyping = true;

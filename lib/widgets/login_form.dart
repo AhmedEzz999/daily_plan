@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({required this.formKey, required this.isTyping, super.key});
-  final GlobalKey formKey;
+  final GlobalKey<FormState> formKey;
   final bool isTyping;
 
   @override
@@ -22,6 +23,11 @@ class _LoginFormState extends State<LoginForm> {
   void dispose() {
     formController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveUsername(String username) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
   }
 
   bool isValidUsername(String username) {
@@ -47,7 +53,9 @@ class _LoginFormState extends State<LoginForm> {
           return null;
         },
         controller: formController,
-        onFieldSubmitted: (value) => formController.text = value,
+        onSaved: (username) async {
+          _saveUsername(username!);
+        },
         style: const TextStyle(color: Colors.white, fontSize: 24),
         cursorColor: Colors.white,
         decoration: InputDecoration(

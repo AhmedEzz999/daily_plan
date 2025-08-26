@@ -36,10 +36,12 @@ class BodyLoginView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        SvgPicture.asset(
-          'assets/images/work_in_progress.svg',
-          width: 206,
-          height: 216,
+        FittedBox(
+          child: SvgPicture.asset(
+            'assets/images/work_in_progress.svg',
+            width: 206,
+            height: 216,
+          ),
         ),
         const SizedBox(height: 28),
         const LoginContainer(),

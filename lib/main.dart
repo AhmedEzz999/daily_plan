@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'constants/constants.dart';
+import 'views/home_view.dart';
 import 'views/login_view.dart';
 
 void main() {
@@ -14,7 +16,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Daily Plan',
-      theme: ThemeData(useMaterial3: true),
+      theme: ThemeData(
+        useMaterial3: true,
+        scaffoldBackgroundColor: scaffoldBackgroundColor,
+      ),
+      routes: {
+        loginViewID: (context) => const LoginView(),
+        homeViewID: (context) => const HomeView(),
+      },
       home: const LoginView(),
     );
   }

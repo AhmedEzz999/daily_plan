@@ -11,9 +11,11 @@ class HeaderLoginView extends StatelessWidget {
       children: [
         SvgPicture.asset('assets/images/logo.svg', width: 42, height: 42),
         const SizedBox(width: 16),
-        const Text(
-          'Daily Plan',
-          style: TextStyle(color: Colors.white, fontSize: 28),
+        const FittedBox(
+          child: Text(
+            'Daily Plan',
+            style: TextStyle(color: Colors.white, fontSize: 28),
+          ),
         ),
       ],
     );
