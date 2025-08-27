@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/add_task_button.dart';
+import '../constants/constants.dart';
 import '../widgets/header_home_view.dart';
 
 class HomeView extends StatelessWidget {
@@ -8,17 +8,28 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
+    return Scaffold(
+      body: const SafeArea(
         child: Padding(
           padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              HeaderHomeView(),
-              Align(alignment: Alignment.centerRight, child: AddTaskButton()),
-            ],
+            children: [HeaderHomeView()],
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        extendedPadding: const EdgeInsets.only(left: 20, right: 24),
+        backgroundColor: kPrimaryColor,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        onPressed: () {
+          Navigator.pushNamed(context, newTaskViewID);
+        },
+        icon: const Icon(Icons.add, size: 26),
+        label: const Text(
+          'Add New Task',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
       ),
     );

@@ -8,7 +8,9 @@ class SaveTaskButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pop(context);
+      },
       icon: const Icon(Icons.add, size: 26),
       label: const Text(
         'Add Task',

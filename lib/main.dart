@@ -7,6 +7,7 @@ import 'views/login_view.dart';
 import 'views/new_task_view.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
