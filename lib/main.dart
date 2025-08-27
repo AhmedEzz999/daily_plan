@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'constants/constants.dart';
 import 'views/home_view.dart';
 import 'views/login_view.dart';
+import 'views/new_task_view.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -39,11 +40,17 @@ class _MyAppState extends State<MyApp> {
       title: 'Daily Plan',
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: scaffoldBackgroundColor,
+        scaffoldBackgroundColor: kScaffoldBackgroundColor,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: kScaffoldBackgroundColor,
+          iconTheme: IconThemeData(color: Colors.white, size: 32),
+          titleTextStyle: TextStyle(color: Colors.white, fontSize: 24),
+        ),
       ),
       routes: {
         loginViewID: (context) => const LoginView(),
         homeViewID: (context) => const HomeView(),
+        newTaskViewID: (context) => const NewTaskView(),
       },
       home: username == null ? const LoginView() : const HomeView(),
     );

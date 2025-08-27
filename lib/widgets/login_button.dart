@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
+
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key, this.onPressed});
   final void Function()? onPressed;
@@ -9,7 +11,7 @@ class LoginButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xff15B86C),
+        backgroundColor: kPrimaryColor,
         fixedSize: Size(MediaQuery.sizeOf(context).width, 50),
       ),
       child: const Text(

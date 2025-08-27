@@ -1,29 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginForm extends StatefulWidget {
+class LoginForm extends StatelessWidget {
   const LoginForm({required this.formKey, required this.isTyping, super.key});
   final GlobalKey<FormState> formKey;
   final bool isTyping;
-
-  @override
-  State<LoginForm> createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<LoginForm> {
-  late TextEditingController formController;
-
-  @override
-  void initState() {
-    super.initState();
-    formController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    formController.dispose();
-    super.dispose();
-  }
 
   Future<void> _saveUsername(String username) async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,10 +19,10 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      autovalidateMode: widget.isTyping
+      autovalidateMode: isTyping
           ? AutovalidateMode.always
           : AutovalidateMode.disabled,
-      key: widget.formKey,
+      key: formKey,
       child: TextFormField(
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -52,7 +33,6 @@ class _LoginFormState extends State<LoginForm> {
           }
           return null;
         },
-        controller: formController,
         onSaved: (username) async {
           _saveUsername(username!);
         },
