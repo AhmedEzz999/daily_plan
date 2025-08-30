@@ -37,7 +37,11 @@ class _HeaderHomeViewState extends State<HeaderHomeView> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Image.asset('assets/images/profile_picture.png', width: 54, height: 54),
+        Image.asset(
+          'assets/images/profile_picture.png',
+          width: 54,
+          height: 54,
+        ),
         const SizedBox(width: 8),
         SizedBox(
           width: 250,
@@ -66,7 +70,11 @@ class _HeaderHomeViewState extends State<HeaderHomeView> {
           child: const CircleAvatar(
             backgroundColor: Color(0xff282828),
             radius: 28,
-            child: Icon(Icons.wb_sunny_outlined, size: 36, color: Colors.white),
+            child: Icon(
+              Icons.wb_sunny_outlined,
+              size: 36,
+              color: Colors.white,
+            ),
           ),
         ),
       ],

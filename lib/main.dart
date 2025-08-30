@@ -41,9 +41,9 @@ class _MyAppState extends State<MyApp> {
       title: 'Daily Plan',
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: kScaffoldBackgroundColor,
+        scaffoldBackgroundColor: scaffoldBackgroundColor,
         appBarTheme: const AppBarTheme(
-          backgroundColor: kScaffoldBackgroundColor,
+          backgroundColor: scaffoldBackgroundColor,
           iconTheme: IconThemeData(color: Colors.white, size: 32),
           titleTextStyle: TextStyle(color: Colors.white, fontSize: 24),
         ),

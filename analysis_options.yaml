@@ -68,9 +68,6 @@ linter:
     # Avoid positional booleans
     avoid_positional_boolean_parameters: true
 
-    # Put class constructors first
-    sort_constructors_first: true
-
     # Prefer final in for-each loops
     prefer_final_in_for_each: true
 

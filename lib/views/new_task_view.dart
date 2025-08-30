@@ -1,59 +1,95 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/constants.dart';
+import '../widgets/custom_snack_bar.dart';
+import '../widgets/new_task_body.dart';
 import '../widgets/save_task_button.dart';
-import '../widgets/task_description_form.dart';
-import '../widgets/task_name_form.dart';
-import '../widgets/task_priority_switch.dart';
 
-class NewTaskView extends StatelessWidget {
+class NewTaskView extends StatefulWidget {
   const NewTaskView({super.key});
+
+  @override
+  State<NewTaskView> createState() => _NewTaskViewState();
+}
+
+class _NewTaskViewState extends State<NewTaskView> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  List<dynamic> tasksList = [];
+  late TextEditingController _taskNameController;
+  late TextEditingController _taskDescriptionController;
+  bool _isHighPriority = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _taskNameController = TextEditingController();
+    _taskDescriptionController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _taskNameController.dispose();
+    _taskDescriptionController.dispose();
+  }
+
+  void _addTask() async {
+    final prefs = await SharedPreferences.getInstance();
+    final Map<String, dynamic> task = {
+      'Task Name': _taskNameController.text,
+      'Task Description': _taskDescriptionController.text,
+      'High Priority': _isHighPriority,
+    };
+    final String? tasksListEncode = prefs.getString('tasks');
+    if (tasksListEncode != null) {
+      tasksList = jsonDecode(tasksListEncode);
+    }
+    tasksList.add(task);
+    await prefs.setString('tasks', jsonEncode(tasksList));
+    log('${prefs.getString('tasks')}');
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: kScaffoldBackgroundColor,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: scaffoldBackgroundColor,
         title: const Text('New Task'),
+        centerTitle: false,
       ),
-      body: const SingleChildScrollView(
+      body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
           child: Column(
             children: [
-              SizedBox(height: 12),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Task Name',
-                  style: TextStyle(color: Colors.white, fontSize: 24),
-                ),
+              NewTaskBody(
+                formKey: _formKey,
+                taskNameController: _taskNameController,
+                taskDescriptionController: _taskDescriptionController,
+                isHighPriority: _isHighPriority,
+                onChanged: (newValue) {
+                  setState(() {
+                    _isHighPriority = newValue;
+                  });
+                },
               ),
-              SizedBox(height: 12),
-              TaskNameForm(),
-              SizedBox(height: 24),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Task Description',
-                  style: TextStyle(color: Colors.white, fontSize: 24),
-                ),
+              SaveTaskButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    _addTask();
+                    customSnackBar(context, 'Task Created Successfully');
+                    Navigator.pop(context);
+                  }
+                },
               ),
-              SizedBox(height: 12),
-              TaskDescriptionForm(),
-              SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'High Priority',
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                  ),
-                  TaskPrioritySwitch(),
-                ],
-              ),
-              SizedBox(height: 120),
-              SaveTaskButton(),
             ],
           ),
         ),

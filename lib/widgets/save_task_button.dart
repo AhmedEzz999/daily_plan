@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 
 class SaveTaskButton extends StatelessWidget {
-  const SaveTaskButton({super.key});
+  const SaveTaskButton({required this.onPressed, super.key});
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: () {
-        Navigator.pop(context);
-      },
+      onPressed: onPressed,
       icon: const Icon(Icons.add, size: 26),
       label: const Text(
         'Add Task',
@@ -18,7 +17,7 @@ class SaveTaskButton extends StatelessWidget {
       ),
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
-        backgroundColor: kPrimaryColor,
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         fixedSize: Size(MediaQuery.sizeOf(context).width, 50),
       ),

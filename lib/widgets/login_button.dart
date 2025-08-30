@@ -11,7 +11,7 @@ class LoginButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: kPrimaryColor,
+        backgroundColor: primaryColor,
         fixedSize: Size(MediaQuery.sizeOf(context).width, 50),
       ),
       child: const Text(

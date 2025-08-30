@@ -12,7 +12,7 @@ class LoginForm extends StatelessWidget {
   }
 
   bool isValidUsername(String username) {
-    final regex = RegExp(r'^[a-zA-Z][a-zA-Z0-9_ ]{2,19}$');
+    final regex = RegExp(r'^[a-zA-Z ][a-zA-Z0-9_ ]{2,19}$');
     return regex.hasMatch(username);
   }
 
@@ -25,16 +25,16 @@ class LoginForm extends StatelessWidget {
       key: formKey,
       child: TextFormField(
         validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter a username';
+          if (value == null || value.trim().isEmpty) {
+            return 'Please enter your name';
           }
           if (!isValidUsername(value)) {
-            return 'Invalid Username';
+            return 'Invalid Name';
           }
           return null;
         },
         onSaved: (username) async {
-          _saveUsername(username!);
+          _saveUsername(username!.trim());
         },
         style: const TextStyle(color: Colors.white, fontSize: 24),
         cursorColor: Colors.white,

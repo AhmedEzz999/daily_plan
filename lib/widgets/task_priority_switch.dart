@@ -2,25 +2,22 @@ import 'package:flutter/material.dart';
 
 import '../constants/constants.dart';
 
-class TaskPrioritySwitch extends StatefulWidget {
-  const TaskPrioritySwitch({super.key});
+class TaskPrioritySwitch extends StatelessWidget {
+  const TaskPrioritySwitch({
+    required this.isHighPriority,
+    required this.onChanged,
+    super.key,
+  });
 
-  @override
-  State<TaskPrioritySwitch> createState() => _TaskPrioritySwitchState();
-}
+  final bool isHighPriority;
+  final ValueChanged<bool>? onChanged;
 
-class _TaskPrioritySwitchState extends State<TaskPrioritySwitch> {
-  bool isSwitched = false;
   @override
   Widget build(BuildContext context) {
     return Switch(
-      value: isSwitched,
-      onChanged: (value) {
-        setState(() {
-          isSwitched = value;
-        });
-      },
-      activeTrackColor: kPrimaryColor,
+      value: isHighPriority,
+      onChanged: onChanged,
+      activeTrackColor: primaryColor,
       activeThumbColor: Colors.white,
     );
   }
