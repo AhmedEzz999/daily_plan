@@ -37,53 +37,53 @@ class _NormalPriorityTaskListState extends State<NormalPriorityTaskList> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: taskList.length,
-        itemBuilder: (context, index) => Container(
-          margin: const EdgeInsets.only(bottom: 14),
-          height: 72,
-          decoration: const BoxDecoration(
-            color: Color(0xff282828),
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-          ),
-          child: Row(
-            children: [
-              const TaskCheckBox(),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      maxLines: 1,
-                      taskList[index].taskName,
-                      style: const TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                    taskList[index].taskDescription.isNotEmpty
-                        ? Text(
-                            maxLines: 1,
-                            taskList[index].taskDescription,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Color(0xffC6C6C6),
-                            ),
-                          )
-                        : const SizedBox(),
-                  ],
-                ),
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: taskList.length,
+      itemBuilder: (context, index) => Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        height: 72,
+        decoration: const BoxDecoration(
+          color: Color(0xff282828),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+        child: Row(
+          children: [
+            const TaskCheckBox(),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    maxLines: 1,
+                    taskList[index].taskName,
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                  taskList[index].taskDescription.isNotEmpty
+                      ? Text(
+                          maxLines: 1,
+                          taskList[index].taskDescription,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xffC6C6C6),
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
               ),
-              IconButton(
-                icon: const Icon(
-                  Icons.more_vert,
-                  color: Color(0xffC6C6C6),
-                ), // three vertical dots
-                onPressed: () {
-                  // handle menu action
-                },
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.more_vert,
+                color: Color(0xffC6C6C6),
+              ), // three vertical dots
+              onPressed: () {
+                // handle menu action
+              },
+            ),
+          ],
         ),
       ),
     );

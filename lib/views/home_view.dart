@@ -13,7 +13,19 @@ class HomeView extends StatelessWidget {
       body: const SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Column(children: [HeaderHomeView(), HomeViewBody()]),
+          child: CustomScrollView(
+            physics: BouncingScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                scrolledUnderElevation: 0,
+                surfaceTintColor: Colors.transparent,
+                toolbarHeight: 82,
+                flexibleSpace: FlexibleSpaceBar(background: HeaderHomeView()),
+              ),
+              SliverToBoxAdapter(child: HomeViewBody()),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
