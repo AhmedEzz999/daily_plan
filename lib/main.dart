@@ -41,6 +41,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Daily Plan',
       theme: ThemeData(
         useMaterial3: true,
+        splashFactory: NoSplash.splashFactory,
         scaffoldBackgroundColor: scaffoldBackgroundColor,
         appBarTheme: const AppBarTheme(
           backgroundColor: scaffoldBackgroundColor,
