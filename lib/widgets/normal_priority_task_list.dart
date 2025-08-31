@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/task_model.dart';
+import 'finished_task_description.dart';
+import 'finished_task_name.dart';
 import 'task_check_box.dart';
+import 'unfinished_task_description.dart';
+import 'unfinished_task_name.dart';
 
 class NormalPriorityTaskList extends StatefulWidget {
   const NormalPriorityTaskList({super.key});
@@ -50,26 +54,32 @@ class _NormalPriorityTaskListState extends State<NormalPriorityTaskList> {
         ),
         child: Row(
           children: [
-            const TaskCheckBox(),
+            TaskCheckBox(
+              isFinished: taskList[index].isDone,
+              onChanged: (value) {
+                setState(() {
+                  taskList[index].isDone = value!;
+                });
+              },
+            ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    maxLines: 1,
-                    taskList[index].taskName,
-                    style: const TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                  taskList[index].isDone
+                      ? FinishedTaskName(taskName: taskList[index].taskName)
+                      : UnfinishedTaskName(taskName: taskList[index].taskName),
                   taskList[index].taskDescription.isNotEmpty
-                      ? Text(
-                          maxLines: 1,
-                          taskList[index].taskDescription,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Color(0xffC6C6C6),
-                          ),
-                        )
+                      ? taskList[index].isDone
+                            ? FinishedTaskDescription(
+                                taskDescription:
+                                    taskList[index].taskDescription,
+                              )
+                            : UnfinishedTaskDescription(
+                                taskDescription:
+                                    taskList[index].taskDescription,
+                              )
                       : const SizedBox(),
                 ],
               ),

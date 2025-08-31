@@ -3,16 +3,11 @@ import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 import 'bottom_navigation_icon.dart';
 
-class TaskNavigationBar extends StatefulWidget {
+class TaskNavigationBar extends StatelessWidget {
   const TaskNavigationBar({required this.selectedIndex, super.key, this.onTap});
   final int selectedIndex;
   final void Function(int)? onTap;
 
-  @override
-  State<TaskNavigationBar> createState() => _TaskNavigationBarState();
-}
-
-class _TaskNavigationBarState extends State<TaskNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -21,13 +16,13 @@ class _TaskNavigationBarState extends State<TaskNavigationBar> {
       selectedItemColor: primaryColor,
       unselectedItemColor: const Color(0xffC6C6C6),
       elevation: 0,
-      currentIndex: widget.selectedIndex,
-      onTap: widget.onTap,
+      currentIndex: selectedIndex,
+      onTap: onTap,
       items: [
         BottomNavigationBarItem(
           icon: BottomNavigationIcon(
             iconIndex: 0,
-            currentIndex: widget.selectedIndex,
+            currentIndex: selectedIndex,
             selectedIcon:
                 'assets/images/bottom_navigation_icons/selected_home_icon.svg',
             unSelectedIcon:
@@ -38,7 +33,7 @@ class _TaskNavigationBarState extends State<TaskNavigationBar> {
         BottomNavigationBarItem(
           icon: BottomNavigationIcon(
             iconIndex: 1,
-            currentIndex: widget.selectedIndex,
+            currentIndex: selectedIndex,
             selectedIcon:
                 'assets/images/bottom_navigation_icons/selected_to_do_icon.svg',
             unSelectedIcon:
@@ -49,7 +44,7 @@ class _TaskNavigationBarState extends State<TaskNavigationBar> {
         BottomNavigationBarItem(
           icon: BottomNavigationIcon(
             iconIndex: 2,
-            currentIndex: widget.selectedIndex,
+            currentIndex: selectedIndex,
             selectedIcon:
                 'assets/images/bottom_navigation_icons/selected_completed_icon.svg',
             unSelectedIcon:
@@ -60,7 +55,7 @@ class _TaskNavigationBarState extends State<TaskNavigationBar> {
         BottomNavigationBarItem(
           icon: BottomNavigationIcon(
             iconIndex: 3,
-            currentIndex: widget.selectedIndex,
+            currentIndex: selectedIndex,
             selectedIcon:
                 'assets/images/bottom_navigation_icons/selected_profile_icon.svg',
             unSelectedIcon:

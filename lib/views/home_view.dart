@@ -44,7 +44,7 @@ class _HomeViewState extends State<HomeView> {
                 pinned: true,
                 scrolledUnderElevation: 0,
                 surfaceTintColor: Colors.transparent,
-                toolbarHeight: 82,
+                toolbarHeight: 86,
                 flexibleSpace: FlexibleSpaceBar(background: HeaderHomeView()),
               ),
               SliverToBoxAdapter(child: HomeViewBody()),
