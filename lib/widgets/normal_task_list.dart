@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/task_model.dart';
 import 'finished_task_description.dart';
@@ -8,20 +11,39 @@ import 'unfinished_task_description.dart';
 import 'unfinished_task_name.dart';
 
 class NormalTaskList extends StatefulWidget {
-  const NormalTaskList({required this.taskList, super.key});
-  final List<TaskModel> taskList;
+  const NormalTaskList({super.key});
 
   @override
   State<NormalTaskList> createState() => _NormalTaskListState();
 }
 
 class _NormalTaskListState extends State<NormalTaskList> {
+  List<TaskModel> normalTaskList = [];
+
+  void _loadNormalTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? tasksString = prefs.getString('normal tasks');
+    if (tasksString == null) return;
+    final List<dynamic> taskListDecode = jsonDecode(tasksString);
+    setState(() {
+      normalTaskList = taskListDecode
+          .map((element) => TaskModel.fromJson(element))
+          .toList();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNormalTasks();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: widget.taskList.length,
+      itemCount: normalTaskList.length,
       itemBuilder: (context, index) => Container(
         margin: const EdgeInsets.only(bottom: 14),
         height: 72,
@@ -34,11 +56,15 @@ class _NormalTaskListState extends State<NormalTaskList> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TaskCheckBox(
-                isFinished: widget.taskList[index].isFinished,
-                onChanged: (value) {
+                isFinished: normalTaskList[index].isFinished,
+                onChanged: (value) async {
                   setState(() {
-                    widget.taskList[index].isFinished = value!;
+                    normalTaskList[index].isFinished = value!;
                   });
+                  final prefs = await SharedPreferences.getInstance();
+                  final List<Map<String, dynamic>> updatedTaskList =
+                      normalTaskList.map((task) => task.toJson()).toList();
+                  await prefs.setString('normal tasks', jsonEncode(updatedTaskList));
                 },
               ),
             ),
@@ -47,22 +73,22 @@ class _NormalTaskListState extends State<NormalTaskList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  widget.taskList[index].isFinished
+                  normalTaskList[index].isFinished
                       ? FinishedTaskName(
-                          taskName: widget.taskList[index].taskName,
+                          taskName: normalTaskList[index].taskName,
                         )
                       : UnfinishedTaskName(
-                          taskName: widget.taskList[index].taskName,
+                          taskName: normalTaskList[index].taskName,
                         ),
-                  widget.taskList[index].taskDescription.isNotEmpty
-                      ? widget.taskList[index].isFinished
+                  normalTaskList[index].taskDescription.isNotEmpty
+                      ? normalTaskList[index].isFinished
                             ? FinishedTaskDescription(
                                 taskDescription:
-                                    widget.taskList[index].taskDescription,
+                                    normalTaskList[index].taskDescription,
                               )
                             : UnfinishedTaskDescription(
                                 taskDescription:
-                                    widget.taskList[index].taskDescription,
+                                    normalTaskList[index].taskDescription,
                               )
                       : const SizedBox(),
                 ],
