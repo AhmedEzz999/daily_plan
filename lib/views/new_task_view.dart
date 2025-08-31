@@ -42,7 +42,6 @@ class _NewTaskViewState extends State<NewTaskView> {
       'Task Name': _taskNameController.text,
       'Task Description': _taskDescriptionController.text,
       'High Priority': _isHighPriority,
-      'is Finished': false,
     };
     final String? tasksListEncode = prefs.getString('normal tasks');
     if (tasksListEncode != null) {

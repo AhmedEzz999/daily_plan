@@ -1,19 +1,26 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/user_model.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({required this.formKey, required this.isTyping, super.key});
   final GlobalKey<FormState> formKey;
   final bool isTyping;
 
-  Future<void> _saveUsername(String username) async {
+  Future<void> _saveUserName(String userName) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('username', username);
+    final Map<String, dynamic> userNameJson = {'user name': userName};
+    final UserModel userModel = UserModel.fromJson(userNameJson);
+    final String userNameEncode = jsonEncode(userModel);
+    await prefs.setString('user name', userNameEncode);
   }
 
-  bool isValidUsername(String username) {
+  bool isValidUsername(String userName) {
     final regex = RegExp(r'^[a-zA-Z ][a-zA-Z0-9_ ]{2,19}$');
-    return regex.hasMatch(username);
+    return regex.hasMatch(userName);
   }
 
   @override
@@ -33,8 +40,8 @@ class LoginForm extends StatelessWidget {
           }
           return null;
         },
-        onSaved: (username) async {
-          _saveUsername(username!.trim());
+        onSaved: (userName) async {
+          _saveUserName(userName!.trim());
         },
         style: const TextStyle(color: Colors.white, fontSize: 24),
         cursorColor: Colors.white,
