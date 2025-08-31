@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'constants/constants.dart';
 import 'views/home_view.dart';
 import 'views/login_view.dart';
+import 'views/main_view.dart';
 import 'views/new_task_view.dart';
 
 void main() async {
@@ -54,7 +55,7 @@ class _MyAppState extends State<MyApp> {
         homeViewID: (context) => const HomeView(),
         newTaskViewID: (context) => const NewTaskView(),
       },
-      home: username == null ? const LoginView() : const HomeView(),
+      home: username == null ? const LoginView() : const MainView(),
     );
   }
 }

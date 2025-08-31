@@ -10,15 +10,15 @@ import 'finished_task_name.dart';
 import 'task_check_box.dart';
 import 'unfinished_task_name.dart';
 
-class HighPriorityTaskList extends StatefulWidget {
-  const HighPriorityTaskList({super.key});
+class HighPriorityTasksList extends StatefulWidget {
+  const HighPriorityTasksList({super.key});
 
   @override
-  State<HighPriorityTaskList> createState() => _HighPriorityTaskListState();
+  State<HighPriorityTasksList> createState() => _HighPriorityTasksListState();
 }
 
-class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
-  List<TaskModel> _highPriorityTaskList = [];
+class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
+  List<TaskModel> _highPriorityTasksList = [];
 
   void _loadHighPriorityTasks() async {
     final prefs = await SharedPreferences.getInstance();
@@ -26,7 +26,7 @@ class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
     if (tasksString == null) return;
     final List<dynamic> taskListDecode = jsonDecode(tasksString);
     setState(() {
-      _highPriorityTaskList = taskListDecode
+      _highPriorityTasksList = taskListDecode
           .map((element) => TaskModel.fromJson(element))
           .toList();
     });
@@ -64,7 +64,7 @@ class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _highPriorityTaskList.length,
+                  itemCount: _highPriorityTasksList.length,
                   itemBuilder: (context, index) => Container(
                     height: 40,
                     decoration: const BoxDecoration(
@@ -74,14 +74,14 @@ class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
                     child: Row(
                       children: [
                         TaskCheckBox(
-                          isFinished: _highPriorityTaskList[index].isFinished,
+                          isFinished: _highPriorityTasksList[index].isFinished,
                           onChanged: (value) async {
                             setState(() {
-                              _highPriorityTaskList[index].isFinished = value!;
+                              _highPriorityTasksList[index].isFinished = value!;
                             });
                             final prefs = await SharedPreferences.getInstance();
                             final List<Map<String, dynamic>> updatedTaskList =
-                                _highPriorityTaskList
+                                _highPriorityTasksList
                                     .map((task) => task.toJson())
                                     .toList();
                             await prefs.setString(
@@ -91,14 +91,14 @@ class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
                           },
                         ),
                         Expanded(
-                          child: _highPriorityTaskList[index].isFinished
+                          child: _highPriorityTasksList[index].isFinished
                               ? FinishedTaskName(
                                   taskName:
-                                      _highPriorityTaskList[index].taskName,
+                                      _highPriorityTasksList[index].taskName,
                                 )
                               : UnfinishedTaskName(
                                   taskName:
-                                      _highPriorityTaskList[index].taskName,
+                                      _highPriorityTasksList[index].taskName,
                                 ),
                         ),
                       ],

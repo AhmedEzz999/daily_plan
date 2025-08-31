@@ -10,32 +10,55 @@ import 'task_check_box.dart';
 import 'unfinished_task_description.dart';
 import 'unfinished_task_name.dart';
 
-class NormalTaskList extends StatefulWidget {
-  const NormalTaskList({super.key});
+class CompletedTasksList extends StatefulWidget {
+  const CompletedTasksList({super.key});
 
   @override
-  State<NormalTaskList> createState() => _NormalTaskListState();
+  State<CompletedTasksList> createState() => _CompletedTasksListState();
 }
 
-class _NormalTaskListState extends State<NormalTaskList> {
-  List<TaskModel> _normalTaskList = [];
+class _CompletedTasksListState extends State<CompletedTasksList> {
+  List<TaskModel> _toDoNormalTasksList = [];
+  List<TaskModel> _toDoHighPriorityTasksList = [];
+  List<TaskModel> _completedTasksList = [];
 
-  void _loadNormalTasks() async {
+  void _loadToDoTasks() async {
     final prefs = await SharedPreferences.getInstance();
     final String? tasksString = prefs.getString('normal tasks');
     if (tasksString == null) return;
     final List<dynamic> taskListDecode = jsonDecode(tasksString);
     setState(() {
-      _normalTaskList = taskListDecode
+      _toDoNormalTasksList = taskListDecode
           .map((element) => TaskModel.fromJson(element))
+          .where((task) => task.isFinished)
           .toList();
+      _completedTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
+    });
+  }
+
+  void _loadToDoHighPriorityTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? highPriorityTasksString = prefs.getString(
+      'high priority tasks',
+    );
+    if (highPriorityTasksString == null) return;
+    final List<dynamic> highPriorityTaskListDecode = jsonDecode(
+      highPriorityTasksString,
+    );
+    setState(() {
+      _toDoHighPriorityTasksList = highPriorityTaskListDecode
+          .map((element) => TaskModel.fromJson(element))
+          .where((task) => task.isFinished)
+          .toList();
+      _completedTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _loadNormalTasks();
+    _loadToDoTasks();
+    _loadToDoHighPriorityTasks();
   }
 
   @override
@@ -43,7 +66,7 @@ class _NormalTaskListState extends State<NormalTaskList> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: _normalTaskList.length,
+      itemCount: _completedTasksList.length,
       itemBuilder: (context, index) => Container(
         margin: const EdgeInsets.only(bottom: 14),
         height: 72,
@@ -56,16 +79,18 @@ class _NormalTaskListState extends State<NormalTaskList> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TaskCheckBox(
-                isFinished: _normalTaskList[index].isFinished,
+                isFinished: _completedTasksList[index].isFinished,
                 onChanged: (value) async {
                   setState(() {
-                    _normalTaskList[index].isFinished = value!;
+                    _completedTasksList[index].isFinished = value!;
                   });
                   final prefs = await SharedPreferences.getInstance();
                   final List<Map<String, dynamic>> updatedTaskList =
-                      _normalTaskList.map((task) => task.toJson()).toList();
+                      _completedTasksList.map((task) => task.toJson()).toList();
                   await prefs.setString(
-                    'normal tasks',
+                    _completedTasksList[index].isHighPriority
+                        ? 'high priority tasks'
+                        : 'normal tasks',
                     jsonEncode(updatedTaskList),
                   );
                 },
@@ -76,22 +101,22 @@ class _NormalTaskListState extends State<NormalTaskList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _normalTaskList[index].isFinished
+                  _completedTasksList[index].isFinished
                       ? FinishedTaskName(
-                          taskName: _normalTaskList[index].taskName,
+                          taskName: _completedTasksList[index].taskName,
                         )
                       : UnfinishedTaskName(
-                          taskName: _normalTaskList[index].taskName,
+                          taskName: _completedTasksList[index].taskName,
                         ),
-                  _normalTaskList[index].taskDescription.isNotEmpty
-                      ? _normalTaskList[index].isFinished
+                  _completedTasksList[index].taskDescription.isNotEmpty
+                      ? _completedTasksList[index].isFinished
                             ? FinishedTaskDescription(
                                 taskDescription:
-                                    _normalTaskList[index].taskDescription,
+                                    _completedTasksList[index].taskDescription,
                               )
                             : UnfinishedTaskDescription(
                                 taskDescription:
-                                    _normalTaskList[index].taskDescription,
+                                    _completedTasksList[index].taskDescription,
                               )
                       : const SizedBox(),
                 ],
@@ -100,13 +125,11 @@ class _NormalTaskListState extends State<NormalTaskList> {
             IconButton(
               icon: Icon(
                 Icons.more_vert,
-                color: _normalTaskList[index].isFinished
+                color: _completedTasksList[index].isFinished
                     ? const Color(0xffA0A0A0)
                     : const Color(0xffC6C6C6),
-              ), // three vertical dots
-              onPressed: () {
-                // handle menu action
-              },
+              ),
+              onPressed: () {},
             ),
           ],
         ),
