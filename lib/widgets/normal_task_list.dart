@@ -1,8 +1,4 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/task_model.dart';
 import 'finished_task_description.dart';
@@ -11,40 +7,21 @@ import 'task_check_box.dart';
 import 'unfinished_task_description.dart';
 import 'unfinished_task_name.dart';
 
-class NormalPriorityTaskList extends StatefulWidget {
-  const NormalPriorityTaskList({super.key});
+class NormalTaskList extends StatefulWidget {
+  const NormalTaskList({required this.taskList, super.key});
+  final List<TaskModel> taskList;
 
   @override
-  State<NormalPriorityTaskList> createState() => _NormalPriorityTaskListState();
+  State<NormalTaskList> createState() => _NormalTaskListState();
 }
 
-class _NormalPriorityTaskListState extends State<NormalPriorityTaskList> {
-  List<TaskModel> taskList = [];
-  void _loadTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final tasksString = prefs.getString('tasks');
-    if (tasksString == null) return;
-    final List<dynamic> taskListDecode = jsonDecode(tasksString);
-    setState(() {
-      taskList = taskListDecode
-          .map((element) => TaskModel.fromJson(element))
-          .toList();
-    });
-    log('$taskList');
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTasks();
-  }
-
+class _NormalTaskListState extends State<NormalTaskList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: taskList.length,
+      itemCount: widget.taskList.length,
       itemBuilder: (context, index) => Container(
         margin: const EdgeInsets.only(bottom: 14),
         height: 72,
@@ -54,31 +31,38 @@ class _NormalPriorityTaskListState extends State<NormalPriorityTaskList> {
         ),
         child: Row(
           children: [
-            TaskCheckBox(
-              isFinished: taskList[index].isDone,
-              onChanged: (value) {
-                setState(() {
-                  taskList[index].isDone = value!;
-                });
-              },
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TaskCheckBox(
+                isFinished: widget.taskList[index].isFinished,
+                onChanged: (value) {
+                  setState(() {
+                    widget.taskList[index].isFinished = value!;
+                  });
+                },
+              ),
             ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  taskList[index].isDone
-                      ? FinishedTaskName(taskName: taskList[index].taskName)
-                      : UnfinishedTaskName(taskName: taskList[index].taskName),
-                  taskList[index].taskDescription.isNotEmpty
-                      ? taskList[index].isDone
+                  widget.taskList[index].isFinished
+                      ? FinishedTaskName(
+                          taskName: widget.taskList[index].taskName,
+                        )
+                      : UnfinishedTaskName(
+                          taskName: widget.taskList[index].taskName,
+                        ),
+                  widget.taskList[index].taskDescription.isNotEmpty
+                      ? widget.taskList[index].isFinished
                             ? FinishedTaskDescription(
                                 taskDescription:
-                                    taskList[index].taskDescription,
+                                    widget.taskList[index].taskDescription,
                               )
                             : UnfinishedTaskDescription(
                                 taskDescription:
-                                    taskList[index].taskDescription,
+                                    widget.taskList[index].taskDescription,
                               )
                       : const SizedBox(),
                 ],
