@@ -18,7 +18,7 @@ class NormalTaskList extends StatefulWidget {
 }
 
 class _NormalTaskListState extends State<NormalTaskList> {
-  List<TaskModel> normalTaskList = [];
+  List<TaskModel> _normalTaskList = [];
 
   void _loadNormalTasks() async {
     final prefs = await SharedPreferences.getInstance();
@@ -26,7 +26,7 @@ class _NormalTaskListState extends State<NormalTaskList> {
     if (tasksString == null) return;
     final List<dynamic> taskListDecode = jsonDecode(tasksString);
     setState(() {
-      normalTaskList = taskListDecode
+      _normalTaskList = taskListDecode
           .map((element) => TaskModel.fromJson(element))
           .toList();
     });
@@ -43,7 +43,7 @@ class _NormalTaskListState extends State<NormalTaskList> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: normalTaskList.length,
+      itemCount: _normalTaskList.length,
       itemBuilder: (context, index) => Container(
         margin: const EdgeInsets.only(bottom: 14),
         height: 72,
@@ -56,15 +56,18 @@ class _NormalTaskListState extends State<NormalTaskList> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TaskCheckBox(
-                isFinished: normalTaskList[index].isFinished,
+                isFinished: _normalTaskList[index].isFinished,
                 onChanged: (value) async {
                   setState(() {
-                    normalTaskList[index].isFinished = value!;
+                    _normalTaskList[index].isFinished = value!;
                   });
                   final prefs = await SharedPreferences.getInstance();
                   final List<Map<String, dynamic>> updatedTaskList =
-                      normalTaskList.map((task) => task.toJson()).toList();
-                  await prefs.setString('normal tasks', jsonEncode(updatedTaskList));
+                      _normalTaskList.map((task) => task.toJson()).toList();
+                  await prefs.setString(
+                    'normal tasks',
+                    jsonEncode(updatedTaskList),
+                  );
                 },
               ),
             ),
@@ -73,31 +76,33 @@ class _NormalTaskListState extends State<NormalTaskList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  normalTaskList[index].isFinished
+                  _normalTaskList[index].isFinished
                       ? FinishedTaskName(
-                          taskName: normalTaskList[index].taskName,
+                          taskName: _normalTaskList[index].taskName,
                         )
                       : UnfinishedTaskName(
-                          taskName: normalTaskList[index].taskName,
+                          taskName: _normalTaskList[index].taskName,
                         ),
-                  normalTaskList[index].taskDescription.isNotEmpty
-                      ? normalTaskList[index].isFinished
+                  _normalTaskList[index].taskDescription.isNotEmpty
+                      ? _normalTaskList[index].isFinished
                             ? FinishedTaskDescription(
                                 taskDescription:
-                                    normalTaskList[index].taskDescription,
+                                    _normalTaskList[index].taskDescription,
                               )
                             : UnfinishedTaskDescription(
                                 taskDescription:
-                                    normalTaskList[index].taskDescription,
+                                    _normalTaskList[index].taskDescription,
                               )
                       : const SizedBox(),
                 ],
               ),
             ),
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.more_vert,
-                color: Color(0xffC6C6C6),
+                color: _normalTaskList[index].isFinished
+                    ? const Color(0xffA0A0A0)
+                    : const Color(0xffC6C6C6),
               ), // three vertical dots
               onPressed: () {
                 // handle menu action

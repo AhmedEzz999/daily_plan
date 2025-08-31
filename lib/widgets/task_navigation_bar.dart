@@ -23,10 +23,8 @@ class TaskNavigationBar extends StatelessWidget {
           icon: BottomNavigationIcon(
             iconIndex: 0,
             currentIndex: selectedIndex,
-            selectedIcon:
-                'assets/images/bottom_navigation_icons/selected_home_icon.svg',
-            unSelectedIcon:
-                'assets/images/bottom_navigation_icons/unselected_home_icon.svg',
+            iconSource:
+                'assets/images/bottom_navigation_icons/home_icon.svg',
           ),
           label: 'Home',
         ),
@@ -34,10 +32,8 @@ class TaskNavigationBar extends StatelessWidget {
           icon: BottomNavigationIcon(
             iconIndex: 1,
             currentIndex: selectedIndex,
-            selectedIcon:
-                'assets/images/bottom_navigation_icons/selected_to_do_icon.svg',
-            unSelectedIcon:
-                'assets/images/bottom_navigation_icons/unselected_to_do_icon.svg',
+            iconSource:
+                'assets/images/bottom_navigation_icons/to_do_icon.svg',
           ),
           label: 'To Do',
         ),
@@ -45,10 +41,8 @@ class TaskNavigationBar extends StatelessWidget {
           icon: BottomNavigationIcon(
             iconIndex: 2,
             currentIndex: selectedIndex,
-            selectedIcon:
-                'assets/images/bottom_navigation_icons/selected_completed_icon.svg',
-            unSelectedIcon:
-                'assets/images/bottom_navigation_icons/unselected_completed_icon.svg',
+            iconSource:
+                'assets/images/bottom_navigation_icons/completed_icon.svg',
           ),
           label: 'Completed',
         ),
@@ -56,10 +50,8 @@ class TaskNavigationBar extends StatelessWidget {
           icon: BottomNavigationIcon(
             iconIndex: 3,
             currentIndex: selectedIndex,
-            selectedIcon:
-                'assets/images/bottom_navigation_icons/selected_profile_icon.svg',
-            unSelectedIcon:
-                'assets/images/bottom_navigation_icons/unselected_profile_icon.svg',
+            iconSource:
+                'assets/images/bottom_navigation_icons/profile_icon.svg',
           ),
           label: 'Profile',
         ),

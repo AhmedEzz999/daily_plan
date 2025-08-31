@@ -18,7 +18,7 @@ class HighPriorityTaskList extends StatefulWidget {
 }
 
 class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
-  List<TaskModel> highPriorityTaskList = [];
+  List<TaskModel> _highPriorityTaskList = [];
 
   void _loadHighPriorityTasks() async {
     final prefs = await SharedPreferences.getInstance();
@@ -26,7 +26,7 @@ class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
     if (tasksString == null) return;
     final List<dynamic> taskListDecode = jsonDecode(tasksString);
     setState(() {
-      highPriorityTaskList = taskListDecode
+      _highPriorityTaskList = taskListDecode
           .map((element) => TaskModel.fromJson(element))
           .toList();
     });
@@ -64,7 +64,7 @@ class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: highPriorityTaskList.length,
+                  itemCount: _highPriorityTaskList.length,
                   itemBuilder: (context, index) => Container(
                     height: 40,
                     decoration: const BoxDecoration(
@@ -74,14 +74,14 @@ class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
                     child: Row(
                       children: [
                         TaskCheckBox(
-                          isFinished: highPriorityTaskList[index].isFinished,
+                          isFinished: _highPriorityTaskList[index].isFinished,
                           onChanged: (value) async {
                             setState(() {
-                              highPriorityTaskList[index].isFinished = value!;
+                              _highPriorityTaskList[index].isFinished = value!;
                             });
                             final prefs = await SharedPreferences.getInstance();
                             final List<Map<String, dynamic>> updatedTaskList =
-                                highPriorityTaskList
+                                _highPriorityTaskList
                                     .map((task) => task.toJson())
                                     .toList();
                             await prefs.setString(
@@ -91,14 +91,14 @@ class _HighPriorityTaskListState extends State<HighPriorityTaskList> {
                           },
                         ),
                         Expanded(
-                          child: highPriorityTaskList[index].isFinished
+                          child: _highPriorityTaskList[index].isFinished
                               ? FinishedTaskName(
                                   taskName:
-                                      highPriorityTaskList[index].taskName,
+                                      _highPriorityTaskList[index].taskName,
                                 )
                               : UnfinishedTaskName(
                                   taskName:
-                                      highPriorityTaskList[index].taskName,
+                                      _highPriorityTaskList[index].taskName,
                                 ),
                         ),
                       ],
