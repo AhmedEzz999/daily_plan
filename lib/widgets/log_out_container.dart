@@ -42,7 +42,7 @@ class LogOutContainer extends StatelessWidget {
             ),
             icon: const Icon(
               Icons.arrow_forward,
-              color: Colors.white,
+              color: Color(0xffC6C6C6),
               size: 32,
             ),
           ),

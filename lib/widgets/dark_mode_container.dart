@@ -16,31 +16,39 @@ class _DarkModeContainerState extends State<DarkModeContainer> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      height: 65,
+      child: Column(
         children: [
-          SvgPicture.asset(
-            'assets/images/moon_icon.svg',
-            width: 32,
-            height: 32,
-            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/images/moon_icon.svg',
+                width: 32,
+                height: 32,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+              ),
+              const SizedBox(width: 16),
+              const Expanded(
+                child: Text(
+                  'Dark Mode',
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                ),
+              ),
+              DarkModeSwitch(
+                value: widget.userModel?.darkMode ?? true,
+                onChanged: (newMode) {
+                  setState(() {
+                    widget.userModel?.darkMode = newMode;
+                  });
+                },
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
-          const Expanded(
-            child: Text(
-              'Dark Mode',
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-          DarkModeSwitch(
-            value: widget.userModel?.darkMode ?? true,
-            onChanged: (newMode) {
-              setState(() {
-                widget.userModel?.darkMode = newMode;
-              });
-            },
-          ),
+          const Divider(color: Color(0xff6E6E6E), endIndent: 15),
         ],
       ),
     );

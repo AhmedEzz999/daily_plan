@@ -10,12 +10,35 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          width: 100,
-          height: 100,
-          child: Image.asset(
-            userModel?.imageSource ?? 'assets/images/profile_picture.png',
-          ),
+        Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: CircleAvatar(
+                radius: 70,
+                backgroundColor: Colors.transparent,
+                backgroundImage: AssetImage(
+                  userModel?.imageSource ?? 'assets/images/profile_picture.png',
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: CircleAvatar(
+                backgroundColor: const Color(0xff282828),
+                radius: 22,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.camera_alt_outlined,
+                    color: Colors.white,
+                    size: 26,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         Text(
