@@ -31,9 +31,9 @@ class _NewTaskViewState extends State<NewTaskView> {
 
   @override
   void dispose() {
-    super.dispose();
     _taskNameController.dispose();
     _taskDescriptionController.dispose();
+    super.dispose();
   }
 
   void _addNormalTask() async {

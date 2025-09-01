@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../models/user_model.dart';
-import '../views/edit_user_view.dart';
+import '../views/edit_user_details_view.dart';
 
 class UserDetailsContainer extends StatelessWidget {
   const UserDetailsContainer({required this.userModel, super.key});
@@ -39,7 +39,7 @@ class UserDetailsContainer extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return EditUserView(userModel: userModel);
+                        return EditUserDetailsView(userModel: userModel);
                       },
                     ),
                   );

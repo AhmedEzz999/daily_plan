@@ -6,4 +6,4 @@ const String loginViewID = 'login view';
 const String mainViewID = 'main view';
 const String homeViewID = 'home view';
 const String newTaskViewID = 'new task view';
-const String editUserViewID = 'edit user view';
+const String editUserDetailsViewID = 'edit user details view';
