@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../constants/constants.dart';
 import '../models/user_model.dart';
 
 class HeaderHomeView extends StatefulWidget {
@@ -16,7 +15,7 @@ class HeaderHomeView extends StatefulWidget {
 class _HeaderHomeViewState extends State<HeaderHomeView> {
   UserModel? userModel;
 
-  Future<void> _getUsername() async {
+  Future<void> _getUserModel() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? userModelString = prefs.getString('user name');
     if (userModelString == null) return;
@@ -25,16 +24,10 @@ class _HeaderHomeViewState extends State<HeaderHomeView> {
     setState(() {});
   }
 
-  Future<void> _removeUsername() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user name');
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
-    _getUsername();
+    _getUserModel();
   }
 
   @override
@@ -69,10 +62,7 @@ class _HeaderHomeViewState extends State<HeaderHomeView> {
         ),
         const SizedBox(width: 8),
         GestureDetector(
-          onTap: () {
-            _removeUsername();
-            Navigator.pushReplacementNamed(context, loginViewID);
-          },
+          onTap: () {},
           child: const CircleAvatar(
             backgroundColor: Color(0xff282828),
             radius: 28,

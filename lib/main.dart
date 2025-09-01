@@ -52,6 +52,7 @@ class _MyAppState extends State<MyApp> {
       ),
       routes: {
         loginViewID: (context) => const LoginView(),
+        mainViewID: (context) => const MainView(),
         homeViewID: (context) => const HomeView(),
         newTaskViewID: (context) => const NewTaskView(),
       },

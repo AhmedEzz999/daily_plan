@@ -35,7 +35,7 @@ class _LoginContainerState extends State<LoginContainer> {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
               customSnackBar(context, 'Valid Username');
-              Navigator.pushReplacementNamed(context, homeViewID);
+              Navigator.pushReplacementNamed(context, mainViewID);
             }
             setState(() {
               isTyping = true;

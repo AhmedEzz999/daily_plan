@@ -1,38 +1,51 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class ProfileView extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/user_model.dart';
+import '../widgets/profile_app_bar.dart';
+import '../widgets/profile_header.dart';
+import '../widgets/profile_info_section.dart';
+
+class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
+
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  UserModel? userModel;
+
+  Future<void> _getUserModel() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? userModelString = prefs.getString('user name');
+    if (userModelString == null) return;
+    final Map<String, dynamic> userModelDecode = jsonDecode(userModelString);
+    userModel = UserModel.fromJson(userModelDecode);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserModel();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {},
-                style: IconButton.styleFrom(
-                  padding: const EdgeInsets.only(left: 24, right: 16),
-                ),
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                  size: 32,
-                ),
-              ),
-              const SizedBox(width: 4),
-              const Text(
-                'My Profile',
-                style: TextStyle(fontSize: 24, color: Colors.white),
-              ),
-            ],
-          ),
-          const Text(
-            'To Do Tasks',
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            const ProfileAppBar(),
+            ProfileHeader(userModel: userModel),
+            const SizedBox(height: 24),
+            ProfileInfoSection(userModel: userModel),
+          ],
+        ),
       ),
     );
   }

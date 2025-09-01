@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../models/user_model.dart';
 import '../widgets/save_user_details_button.dart';
 
 class EditUserView extends StatelessWidget {
-  const EditUserView({super.key});
+  const EditUserView({required this.userModel, super.key});
+  final UserModel? userModel;
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 const Color scaffoldBackgroundColor = Color(0xFF181818);
 const Color primaryColor = Color(0xFF15B86C);
-const String loginViewID = 'login_view';
-const String homeViewID = 'home_view';
-const String newTaskViewID = 'new_task_view';
+const String loginViewID = 'login view';
+const String mainViewID = 'main view';
+const String homeViewID = 'home view';
+const String newTaskViewID = 'new task view';
+const String editUserViewID = 'edit user view';
