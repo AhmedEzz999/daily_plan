@@ -17,7 +17,7 @@ class ToDoTasksView extends StatelessWidget {
             style: TextStyle(color: Colors.white, fontSize: 24),
           ),
           SizedBox(height: 32),
-          ToDoTasksList(),
+          Expanded(child: ToDoTasksList()),
         ],
       ),
     );

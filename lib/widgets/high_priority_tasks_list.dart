@@ -72,7 +72,7 @@ class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
                                   final List<Map<String, dynamic>>
                                   updatedTaskList = widget.highPriorityTasksList
                                       .map((task) => task.toJson())
-                                      .toList();
+                                      .toList().reversed.toList();
                                   await prefs.setString(
                                     'high priority tasks',
                                     jsonEncode(updatedTaskList),

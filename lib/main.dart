@@ -58,6 +58,32 @@ class _MyAppState extends State<MyApp> {
           iconTheme: IconThemeData(color: Colors.white, size: 32),
           titleTextStyle: TextStyle(color: Colors.white, fontSize: 24),
         ),
+        switchTheme: SwitchThemeData(
+          thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return Colors.white;
+            }
+            return const Color(0xff9E9E9E);
+          }),
+          trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return primaryColor;
+            }
+            return Colors.white;
+          }),
+          trackOutlineColor: WidgetStateProperty.resolveWith<Color>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return Colors.transparent;
+            }
+            return const Color(0xff9E9E9E);
+          }),
+          trackOutlineWidth: WidgetStateProperty.resolveWith<double>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return 0;
+            }
+            return 2;
+          }),
+        ),
       ),
       routes: {
         loginViewID: (context) => const LoginView(),

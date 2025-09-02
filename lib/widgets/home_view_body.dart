@@ -27,7 +27,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     setState(() {
       _highPriorityTasksList = taskListDecode
           .map((element) => TaskModel.fromJson(element))
-          .toList();
+          .toList().reversed.toList();
     });
   }
 
@@ -39,7 +39,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     setState(() {
       _normalTasksList = taskListDecode
           .map((element) => TaskModel.fromJson(element))
-          .toList();
+          .toList().reversed.toList();
     });
   }
 

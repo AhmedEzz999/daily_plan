@@ -52,7 +52,7 @@ class _NormalTasksListState extends State<NormalTasksList> {
                         final List<Map<String, dynamic>> updatedTaskList =
                             widget.normalTasksList
                                 .map((task) => task.toJson())
-                                .toList();
+                                .toList().reversed.toList();
                         await prefs.setString(
                           'normal tasks',
                           jsonEncode(updatedTaskList),

@@ -29,7 +29,7 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
     final List<dynamic> taskListDecode = jsonDecode(tasksString);
     _normalTasksList = taskListDecode
         .map((element) => TaskModel.fromJson(element))
-        .toList();
+        .toList().reversed.toList();
     _loadToDoTasksList();
   }
 
@@ -44,7 +44,7 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
     );
     _highPriorityTasksList = highPriorityTaskListDecode
         .map((element) => TaskModel.fromJson(element))
-        .toList();
+        .toList().reversed.toList();
     _loadToDoTasksList();
   }
 
@@ -59,7 +59,7 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
     final prefs = await SharedPreferences.getInstance();
     final List<TaskModel> updateNormalTasksList = _allTasksList
         .where((task) => !task.isHighPriority)
-        .toList();
+        .toList().reversed.toList();
     final List<Map<String, dynamic>> updatedTaskList = updateNormalTasksList
         .map((task) => task.toJson())
         .toList();
@@ -70,7 +70,7 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
     final prefs = await SharedPreferences.getInstance();
     final List<TaskModel> updateHighPriorityTasksList = _allTasksList
         .where((task) => task.isHighPriority)
-        .toList();
+        .toList().reversed.toList();
     final List<Map<String, dynamic>> updatedTaskList =
         updateHighPriorityTasksList.map((task) => task.toJson()).toList();
     await prefs.setString('high priority tasks', jsonEncode(updatedTaskList));

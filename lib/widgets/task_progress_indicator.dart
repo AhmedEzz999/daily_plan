@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../constants/constants.dart';
@@ -18,7 +20,7 @@ class TaskProgressIndicator extends StatelessWidget {
         : allTasksDoneNumber / allTasksNumber;
 
     return Container(
-      height: 86,
+      height: 100,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: const BoxDecoration(
         color: Color(0xff282828),
@@ -43,28 +45,37 @@ class TaskProgressIndicator extends StatelessWidget {
               ),
             ],
           ),
-          Stack(
-            alignment: AlignmentDirectional.center,
-            children: [
-              Transform.rotate(
-                angle: (3 * 3.14) / 2,
-                child: CircularProgressIndicator(
-                  value: progress,
-                  strokeWidth: 6,
-                  strokeAlign: 2.5,
-                  valueColor: const AlwaysStoppedAnimation<Color>(primaryColor),
-                  backgroundColor: const Color(0xff6D6D6D),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                Transform.rotate(
+                  angle: (3 * pi) / 2,
+                  child: SizedBox(
+                    height: 42,
+                    width: 42,
+                    child: CircularProgressIndicator(
+                      value: progress,
+                      strokeWidth: 6,
+                      strokeAlign: 2.5,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        primaryColor,
+                      ),
+                      backgroundColor: const Color(0xff6D6D6D),
+                    ),
+                  ),
                 ),
-              ),
-              Text(
-                '${(progress * 100).toInt()}%',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
+                Text(
+                  '${(progress * 100).toInt()}%',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
