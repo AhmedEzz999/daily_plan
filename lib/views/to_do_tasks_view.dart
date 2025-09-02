@@ -7,22 +7,18 @@ class ToDoTasksView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'To Do Tasks',
-                style: TextStyle(fontSize: 24, color: Colors.white),
-              ),
-              SizedBox(height: 20),
-              ToDoTasksList(),
-            ],
+    return const Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'To Do Tasks',
+            style: TextStyle(color: Colors.white, fontSize: 24),
           ),
-        ),
+          SizedBox(height: 32),
+          ToDoTasksList(),
+        ],
       ),
     );
   }

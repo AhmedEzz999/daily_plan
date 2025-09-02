@@ -89,10 +89,12 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
   @override
   Widget build(BuildContext context) {
     return _completedTasksList.isEmpty
-        ? const EmptyTasks(firstMessage: 'There is no completed tasks')
+        ? const Center(
+            child: EmptyTasks(firstMessage: 'There is no completed tasks'),
+          )
         : ListView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             itemCount: _completedTasksList.length,
             itemBuilder: (context, index) => Container(
               margin: const EdgeInsets.only(bottom: 14),

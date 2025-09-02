@@ -13,44 +13,37 @@ class DarkModeContainer extends StatefulWidget {
 }
 
 class _DarkModeContainerState extends State<DarkModeContainer> {
+  void _toggleDarkMode(bool newMode) {
+    setState(() {
+      widget.userModel?.darkMode = newMode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 65,
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                'assets/images/moon_icon.svg',
-                width: 32,
-                height: 32,
-                colorFilter: const ColorFilter.mode(
-                  Colors.white,
-                  BlendMode.srcIn,
-                ),
-              ),
-              const SizedBox(width: 16),
-              const Expanded(
-                child: Text(
-                  'Dark Mode',
-                  style: TextStyle(fontSize: 24, color: Colors.white),
-                ),
-              ),
-              DarkModeSwitch(
-                value: widget.userModel?.darkMode ?? true,
-                onChanged: (newMode) {
-                  setState(() {
-                    widget.userModel?.darkMode = newMode;
-                  });
-                },
-              ),
-            ],
+    final bool isDark = widget.userModel?.darkMode ?? true;
+    return Column(
+      children: [
+        ListTile(
+          onTap: () => _toggleDarkMode(!isDark),
+          contentPadding: const EdgeInsets.all(0),
+          leading: SvgPicture.asset(
+            'assets/images/moon_icon.svg',
+            width: 32,
+            height: 32,
+            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
-          const Divider(color: Color(0xff6E6E6E), endIndent: 15),
-        ],
-      ),
+          title: const Text(
+            'Dark Mode',
+            style: TextStyle(fontSize: 24, color: Colors.white),
+          ),
+          trailing: DarkModeSwitch(
+            value: widget.userModel?.darkMode ?? true,
+            onChanged: _toggleDarkMode,
+          ),
+        ),
+        const Divider(color: Color(0xff6E6E6E), thickness: 1),
+      ],
     );
   }
 }

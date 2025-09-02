@@ -89,7 +89,7 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
         ? const EmptyTasks(firstMessage: 'There is no to-do tasks')
         : ListView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             itemCount: _toDoTasksList.length,
             itemBuilder: (context, index) {
               return Container(

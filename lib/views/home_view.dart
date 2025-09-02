@@ -10,22 +10,18 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: CustomScrollView(
-            physics: BouncingScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                pinned: true,
-                scrolledUnderElevation: 0,
-                surfaceTintColor: Colors.transparent,
-                toolbarHeight: 86,
-                flexibleSpace: FlexibleSpaceBar(background: HeaderHomeView()),
-              ),
-              SliverToBoxAdapter(child: HomeViewBody()),
-            ],
-          ),
+      body: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: CustomScrollView(
+          physics: BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              toolbarHeight: 86,
+              flexibleSpace: FlexibleSpaceBar(background: HeaderHomeView()),
+            ),
+            SliverToBoxAdapter(child: HomeViewBody()),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(

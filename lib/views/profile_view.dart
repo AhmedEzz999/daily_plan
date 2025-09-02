@@ -34,23 +34,21 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'My Profile',
-                style: TextStyle(fontSize: 24, color: Colors.white),
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'My Profile',
+              style: TextStyle(fontSize: 24, color: Colors.white),
             ),
-            ProfileHeader(userModel: userModel),
-            const SizedBox(height: 24),
-            ProfileInfoSection(userModel: userModel),
-          ],
-        ),
+          ),
+          ProfileHeader(userModel: userModel),
+          const SizedBox(height: 24),
+          ProfileInfoSection(userModel: userModel),
+        ],
       ),
     );
   }

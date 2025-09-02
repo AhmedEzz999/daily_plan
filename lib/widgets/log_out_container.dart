@@ -14,39 +14,26 @@ class LogOutContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 60,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/images/log_out_icon.svg',
-            width: 32,
-            height: 32,
-            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-          ),
-          const SizedBox(width: 16),
-          const Expanded(
-            child: Text(
-              'Log Out',
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              _logOut();
-              Navigator.pushReplacementNamed(context, loginViewID);
-            },
-            style: IconButton.styleFrom(
-              padding: const EdgeInsets.only(left: 12, right: 12),
-            ),
-            icon: const Icon(
-              Icons.arrow_forward,
-              color: Color(0xffC6C6C6),
-              size: 32,
-            ),
-          ),
-        ],
+    return ListTile(
+      onTap: () {
+        _logOut();
+        Navigator.pushReplacementNamed(context, loginViewID);
+      },
+      contentPadding: const EdgeInsets.all(0),
+      leading: SvgPicture.asset(
+        'assets/images/log_out_icon.svg',
+        width: 32,
+        height: 32,
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+      ),
+      title: const Text(
+        'Log Out',
+        style: TextStyle(fontSize: 24, color: Colors.white),
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward,
+        color: Color(0xffC6C6C6),
+        size: 32,
       ),
     );
   }

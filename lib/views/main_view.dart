@@ -36,7 +36,7 @@ class _MainViewState extends State<MainView> {
         selectedIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
-      body: _screens[_selectedIndex],
+      body: SafeArea(child: _screens[_selectedIndex]),
     );
   }
 }

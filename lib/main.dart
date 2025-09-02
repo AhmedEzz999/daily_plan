@@ -51,6 +51,8 @@ class _MyAppState extends State<MyApp> {
         splashFactory: NoSplash.splashFactory,
         scaffoldBackgroundColor: scaffoldBackgroundColor,
         appBarTheme: const AppBarTheme(
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
           centerTitle: false,
           backgroundColor: scaffoldBackgroundColor,
           iconTheme: IconThemeData(color: Colors.white, size: 32),

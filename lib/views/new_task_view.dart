@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../constants/constants.dart';
 import '../widgets/custom_snack_bar.dart';
 import '../widgets/new_task_body.dart';
 import '../widgets/save_task_button.dart';
@@ -70,12 +69,7 @@ class _NewTaskViewState extends State<NewTaskView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: scaffoldBackgroundColor,
-        title: const Text('New Task'),
-      ),
+      appBar: AppBar(title: const Text('New Task')),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),

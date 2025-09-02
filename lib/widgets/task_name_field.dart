@@ -8,7 +8,7 @@ class TaskNameField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       validator: (value) {
-        if (value == null || value.isEmpty) {
+        if (value == null || value.trim().isEmpty) {
           return 'This field is required.';
         }
         return null;
