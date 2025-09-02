@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 
 import '../constants/constants.dart';
+import '../models/task_model.dart';
 
 class TaskProgressIndicator extends StatelessWidget {
-  const TaskProgressIndicator({super.key});
+  const TaskProgressIndicator({required this.allTasksList, super.key});
+  final List<TaskModel> allTasksList;
 
   @override
   Widget build(BuildContext context) {
+    final int allTasksDoneNumber = allTasksList
+        .where((task) => task.isFinished)
+        .length;
+    final int allTasksNumber = allTasksList.length;
+    final double progress = allTasksNumber == 0
+        ? 0
+        : allTasksDoneNumber / allTasksNumber;
+
     return Container(
       height: 86,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -17,19 +27,19 @@ class TaskProgressIndicator extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 textAlign: TextAlign.left,
                 'Achieved Tasks',
                 style: TextStyle(fontSize: 22, color: Colors.white),
               ),
               Text(
                 textAlign: TextAlign.left,
-                '3 Out of 6 Done',
-                style: TextStyle(fontSize: 18, color: Color(0xffC6C6C6)),
+                '$allTasksDoneNumber Out of $allTasksNumber Done',
+                style: const TextStyle(fontSize: 18, color: Color(0xffC6C6C6)),
               ),
             ],
           ),
@@ -38,17 +48,17 @@ class TaskProgressIndicator extends StatelessWidget {
             children: [
               Transform.rotate(
                 angle: (3 * 3.14) / 2,
-                child: const CircularProgressIndicator(
-                  value: 0.5,
+                child: CircularProgressIndicator(
+                  value: progress,
                   strokeWidth: 6,
-                  strokeAlign: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                  backgroundColor: Color(0xff6D6D6D),
+                  strokeAlign: 2.5,
+                  valueColor: const AlwaysStoppedAnimation<Color>(primaryColor),
+                  backgroundColor: const Color(0xff6D6D6D),
                 ),
               ),
-              const Text(
-                '50%',
-                style: TextStyle(
+              Text(
+                '${(progress * 100).toInt()}%',
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                   fontWeight: FontWeight.w500,

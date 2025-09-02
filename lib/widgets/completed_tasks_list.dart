@@ -20,18 +20,17 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
   List<TaskModel> _toDoNormalTasksList = [];
   List<TaskModel> _toDoHighPriorityTasksList = [];
   List<TaskModel> _allTasksList = [];
+  List<TaskModel> _completedTasksList = [];
 
   void _loadToDoTasks() async {
     final prefs = await SharedPreferences.getInstance();
     final String? tasksString = prefs.getString('normal tasks');
     if (tasksString == null) return;
     final List<dynamic> taskListDecode = jsonDecode(tasksString);
-    setState(() {
-      _toDoNormalTasksList = taskListDecode
-          .map((element) => TaskModel.fromJson(element))
-          .toList();
-      _allTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
-    });
+    _toDoNormalTasksList = taskListDecode
+        .map((element) => TaskModel.fromJson(element))
+        .toList();
+    _loadCompletedTasksList();
   }
 
   void _loadToDoHighPriorityTasks() async {
@@ -43,11 +42,18 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
     final List<dynamic> highPriorityTaskListDecode = jsonDecode(
       highPriorityTasksString,
     );
+    _toDoHighPriorityTasksList = highPriorityTaskListDecode
+        .map((element) => TaskModel.fromJson(element))
+        .toList();
+    _loadCompletedTasksList();
+  }
+
+  void _loadCompletedTasksList() {
     setState(() {
-      _toDoHighPriorityTasksList = highPriorityTaskListDecode
-          .map((element) => TaskModel.fromJson(element))
-          .toList();
       _allTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
+      _completedTasksList = _allTasksList
+          .where((task) => task.isFinished)
+          .toList();
     });
   }
 
@@ -77,19 +83,17 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
     super.initState();
     _loadToDoTasks();
     _loadToDoHighPriorityTasks();
+    _loadCompletedTasksList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<TaskModel> completedTasksList = _allTasksList
-        .where((task) => task.isFinished)
-        .toList();
-    return completedTasksList.isEmpty
+    return _completedTasksList.isEmpty
         ? const EmptyTasks(firstMessage: 'There is no completed tasks')
         : ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: completedTasksList.length,
+            itemCount: _completedTasksList.length,
             itemBuilder: (context, index) => Container(
               margin: const EdgeInsets.only(bottom: 14),
               height: 72,
@@ -102,11 +106,11 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TaskCheckBox(
-                      isFinished: completedTasksList[index].isFinished,
+                      isFinished: _completedTasksList[index].isFinished,
                       onChanged: (value) {
                         setState(() {
-                          completedTasksList[index].isFinished = value!;
-                          if (completedTasksList[index].isHighPriority) {
+                          _completedTasksList[index].isFinished = value!;
+                          if (_completedTasksList[index].isHighPriority) {
                             _updateHighPriorityTasks();
                             _loadToDoHighPriorityTasks();
                           } else {
@@ -123,12 +127,12 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         FinishedTaskName(
-                          taskName: completedTasksList[index].taskName,
+                          taskName: _completedTasksList[index].taskName,
                         ),
-                        completedTasksList[index].taskDescription.isNotEmpty
+                        _completedTasksList[index].taskDescription.isNotEmpty
                             ? FinishedTaskDescription(
                                 taskDescription:
-                                    completedTasksList[index].taskDescription,
+                                    _completedTasksList[index].taskDescription,
                               )
                             : const SizedBox(),
                       ],
@@ -137,7 +141,7 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
                   IconButton(
                     icon: Icon(
                       Icons.more_vert,
-                      color: completedTasksList[index].isFinished
+                      color: _completedTasksList[index].isFinished
                           ? const Color(0xffA0A0A0)
                           : const Color(0xffC6C6C6),
                     ),

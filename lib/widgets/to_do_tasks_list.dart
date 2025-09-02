@@ -17,24 +17,23 @@ class ToDoTasksList extends StatefulWidget {
 }
 
 class _ToDoTasksListState extends State<ToDoTasksList> {
-  List<TaskModel> _toDoNormalTasksList = [];
-  List<TaskModel> _toDoHighPriorityTasksList = [];
+  List<TaskModel> _normalTasksList = [];
+  List<TaskModel> _highPriorityTasksList = [];
   List<TaskModel> _allTasksList = [];
+  List<TaskModel> _toDoTasksList = [];
 
-  void _loadToDoTasks() async {
+  void _loadNormalTasks() async {
     final prefs = await SharedPreferences.getInstance();
     final String? tasksString = prefs.getString('normal tasks');
     if (tasksString == null) return;
     final List<dynamic> taskListDecode = jsonDecode(tasksString);
-    setState(() {
-      _toDoNormalTasksList = taskListDecode
-          .map((element) => TaskModel.fromJson(element))
-          .toList();
-      _allTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
-    });
+    _normalTasksList = taskListDecode
+        .map((element) => TaskModel.fromJson(element))
+        .toList();
+    _loadToDoTasksList();
   }
 
-  void _loadToDoHighPriorityTasks() async {
+  void _loadHighPriorityTasks() async {
     final prefs = await SharedPreferences.getInstance();
     final String? highPriorityTasksString = prefs.getString(
       'high priority tasks',
@@ -43,11 +42,16 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
     final List<dynamic> highPriorityTaskListDecode = jsonDecode(
       highPriorityTasksString,
     );
+    _highPriorityTasksList = highPriorityTaskListDecode
+        .map((element) => TaskModel.fromJson(element))
+        .toList();
+    _loadToDoTasksList();
+  }
+
+  void _loadToDoTasksList() {
     setState(() {
-      _toDoHighPriorityTasksList = highPriorityTaskListDecode
-          .map((element) => TaskModel.fromJson(element))
-          .toList();
-      _allTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
+      _allTasksList = [..._highPriorityTasksList, ..._normalTasksList];
+      _toDoTasksList = _allTasksList.where((task) => !task.isFinished).toList();
     });
   }
 
@@ -75,20 +79,18 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
   @override
   void initState() {
     super.initState();
-    _loadToDoTasks();
-    _loadToDoHighPriorityTasks();
+    _loadNormalTasks();
+    _loadHighPriorityTasks();
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<TaskModel> toDoTasksList = _allTasksList
-        .where((task) => !task.isFinished)
-        .toList();
-    return toDoTasksList.isNotEmpty
-        ? ListView.builder(
+    return _toDoTasksList.isEmpty
+        ? const EmptyTasks(firstMessage: 'There is no to-do tasks')
+        : ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: toDoTasksList.length,
+            itemCount: _toDoTasksList.length,
             itemBuilder: (context, index) {
               return Container(
                 margin: const EdgeInsets.only(bottom: 14),
@@ -102,16 +104,16 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TaskCheckBox(
-                        isFinished: toDoTasksList[index].isFinished,
+                        isFinished: _toDoTasksList[index].isFinished,
                         onChanged: (value) {
                           setState(() {
-                            toDoTasksList[index].isFinished = value!;
-                            if (toDoTasksList[index].isHighPriority) {
+                            _toDoTasksList[index].isFinished = value!;
+                            if (_toDoTasksList[index].isHighPriority) {
                               _updateHighPriorityTasks();
-                              _loadToDoHighPriorityTasks();
+                              _loadHighPriorityTasks();
                             } else {
                               _updateNormalTasks();
-                              _loadToDoTasks();
+                              _loadNormalTasks();
                             }
                           });
                         },
@@ -123,12 +125,12 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FinishedTaskName(
-                            taskName: toDoTasksList[index].taskName,
+                            taskName: _toDoTasksList[index].taskName,
                           ),
-                          toDoTasksList[index].taskDescription.isNotEmpty
+                          _toDoTasksList[index].taskDescription.isNotEmpty
                               ? FinishedTaskDescription(
                                   taskDescription:
-                                      toDoTasksList[index].taskDescription,
+                                      _toDoTasksList[index].taskDescription,
                                 )
                               : const SizedBox(),
                         ],
@@ -137,7 +139,7 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
                     IconButton(
                       icon: Icon(
                         Icons.more_vert,
-                        color: toDoTasksList[index].isFinished
+                        color: _toDoTasksList[index].isFinished
                             ? const Color(0xffA0A0A0)
                             : const Color(0xffC6C6C6),
                       ),
@@ -147,7 +149,6 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
                 ),
               );
             },
-          )
-        : const EmptyTasks(firstMessage: 'There is no to-do tasks');
+          );
   }
 }

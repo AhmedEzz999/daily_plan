@@ -30,8 +30,9 @@ class _MyAppState extends State<MyApp> {
     final String? userModelString = prefs.getString('user name');
     if (userModelString == null) return;
     final Map<String, dynamic> userModelDecode = jsonDecode(userModelString);
-    userModel = UserModel.fromJson(userModelDecode);
-    setState(() {});
+    setState(() {
+      userModel = UserModel.fromJson(userModelDecode);
+    });
   }
 
   @override
@@ -62,7 +63,7 @@ class _MyAppState extends State<MyApp> {
         homeViewID: (context) => const HomeView(),
         newTaskViewID: (context) => const NewTaskView(),
       },
-      home: userModel?.userName == null ? const LoginView() : const MainView(),
+      home: userModel == null ? const LoginView() : const MainView(),
     );
   }
 }
