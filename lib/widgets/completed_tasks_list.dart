@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/task_model.dart';
+import 'empty_tasks.dart';
 import 'finished_task_description.dart';
 import 'finished_task_name.dart';
 import 'task_check_box.dart';
-import 'unfinished_task_description.dart';
-import 'unfinished_task_name.dart';
 
 class CompletedTasksList extends StatefulWidget {
   const CompletedTasksList({super.key});
@@ -20,7 +19,7 @@ class CompletedTasksList extends StatefulWidget {
 class _CompletedTasksListState extends State<CompletedTasksList> {
   List<TaskModel> _toDoNormalTasksList = [];
   List<TaskModel> _toDoHighPriorityTasksList = [];
-  List<TaskModel> _completedTasksList = [];
+  List<TaskModel> _allTasksList = [];
 
   void _loadToDoTasks() async {
     final prefs = await SharedPreferences.getInstance();
@@ -30,9 +29,8 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
     setState(() {
       _toDoNormalTasksList = taskListDecode
           .map((element) => TaskModel.fromJson(element))
-          .where((task) => task.isFinished)
           .toList();
-      _completedTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
+      _allTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
     });
   }
 
@@ -48,10 +46,30 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
     setState(() {
       _toDoHighPriorityTasksList = highPriorityTaskListDecode
           .map((element) => TaskModel.fromJson(element))
-          .where((task) => task.isFinished)
           .toList();
-      _completedTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
+      _allTasksList = _toDoHighPriorityTasksList + _toDoNormalTasksList;
     });
+  }
+
+  void _updateNormalTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<TaskModel> updateNormalTasksList = _allTasksList
+        .where((task) => !task.isHighPriority)
+        .toList();
+    final List<Map<String, dynamic>> updatedTaskList = updateNormalTasksList
+        .map((task) => task.toJson())
+        .toList();
+    await prefs.setString('normal tasks', jsonEncode(updatedTaskList));
+  }
+
+  void _updateHighPriorityTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<TaskModel> updateHighPriorityTasksList = _allTasksList
+        .where((task) => task.isHighPriority)
+        .toList();
+    final List<Map<String, dynamic>> updatedTaskList =
+        updateHighPriorityTasksList.map((task) => task.toJson()).toList();
+    await prefs.setString('high priority tasks', jsonEncode(updatedTaskList));
   }
 
   @override
@@ -63,77 +81,71 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _completedTasksList.length,
-      itemBuilder: (context, index) => Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        height: 72,
-        decoration: const BoxDecoration(
-          color: Color(0xff282828),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TaskCheckBox(
-                isFinished: _completedTasksList[index].isFinished,
-                onChanged: (value) async {
-                  setState(() {
-                    _completedTasksList[index].isFinished = value!;
-                  });
-                  final prefs = await SharedPreferences.getInstance();
-                  final List<Map<String, dynamic>> updatedTaskList =
-                      _completedTasksList.map((task) => task.toJson()).toList();
-                  await prefs.setString(
-                    _completedTasksList[index].isHighPriority
-                        ? 'high priority tasks'
-                        : 'normal tasks',
-                    jsonEncode(updatedTaskList),
-                  );
-                },
+    final List<TaskModel> completedTasksList = _allTasksList
+        .where((task) => task.isFinished)
+        .toList();
+    return completedTasksList.isEmpty
+        ? const EmptyTasks(firstMessage: 'There is no completed tasks')
+        : ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: completedTasksList.length,
+            itemBuilder: (context, index) => Container(
+              margin: const EdgeInsets.only(bottom: 14),
+              height: 72,
+              decoration: const BoxDecoration(
+                color: Color(0xff282828),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  _completedTasksList[index].isFinished
-                      ? FinishedTaskName(
-                          taskName: _completedTasksList[index].taskName,
-                        )
-                      : UnfinishedTaskName(
-                          taskName: _completedTasksList[index].taskName,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TaskCheckBox(
+                      isFinished: completedTasksList[index].isFinished,
+                      onChanged: (value) {
+                        setState(() {
+                          completedTasksList[index].isFinished = value!;
+                          if (completedTasksList[index].isHighPriority) {
+                            _updateHighPriorityTasks();
+                            _loadToDoHighPriorityTasks();
+                          } else {
+                            _updateNormalTasks();
+                            _loadToDoTasks();
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FinishedTaskName(
+                          taskName: completedTasksList[index].taskName,
                         ),
-                  _completedTasksList[index].taskDescription.isNotEmpty
-                      ? _completedTasksList[index].isFinished
+                        completedTasksList[index].taskDescription.isNotEmpty
                             ? FinishedTaskDescription(
                                 taskDescription:
-                                    _completedTasksList[index].taskDescription,
+                                    completedTasksList[index].taskDescription,
                               )
-                            : UnfinishedTaskDescription(
-                                taskDescription:
-                                    _completedTasksList[index].taskDescription,
-                              )
-                      : const SizedBox(),
+                            : const SizedBox(),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: completedTasksList[index].isFinished
+                          ? const Color(0xffA0A0A0)
+                          : const Color(0xffC6C6C6),
+                    ),
+                    onPressed: () {},
+                  ),
                 ],
               ),
             ),
-            IconButton(
-              icon: Icon(
-                Icons.more_vert,
-                color: _completedTasksList[index].isFinished
-                    ? const Color(0xffA0A0A0)
-                    : const Color(0xffC6C6C6),
-              ),
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }

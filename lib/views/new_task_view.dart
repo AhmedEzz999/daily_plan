@@ -75,7 +75,6 @@ class _NewTaskViewState extends State<NewTaskView> {
         surfaceTintColor: Colors.transparent,
         backgroundColor: scaffoldBackgroundColor,
         title: const Text('New Task'),
-        centerTitle: false,
       ),
       body: SafeArea(
         child: Padding(

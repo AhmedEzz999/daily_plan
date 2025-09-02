@@ -18,6 +18,7 @@ class ProfileInfoSection extends StatelessWidget {
           'Profile Info',
           style: TextStyle(fontSize: 24, color: Colors.white),
         ),
+        const SizedBox(height: 4),
         UserDetailsContainer(userModel: userModel),
         DarkModeContainer(userModel: userModel),
         const LogOutContainer(),

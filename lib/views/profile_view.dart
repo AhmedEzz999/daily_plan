@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_model.dart';
-import '../widgets/profile_app_bar.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_info_section.dart';
 
@@ -40,7 +39,13 @@ class _ProfileViewState extends State<ProfileView> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            const ProfileAppBar(),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'My Profile',
+                style: TextStyle(fontSize: 24, color: Colors.white),
+              ),
+            ),
             ProfileHeader(userModel: userModel),
             const SizedBox(height: 24),
             ProfileInfoSection(userModel: userModel),

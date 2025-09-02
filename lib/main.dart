@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants/constants.dart';
+import 'models/user_model.dart';
 import 'views/home_view.dart';
 import 'views/login_view.dart';
 import 'views/main_view.dart';
@@ -20,19 +23,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String? username;
+  UserModel? userModel;
 
-  Future<void> _usernameExist() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      username = prefs.getString('username');
-    });
+  Future<void> _getUserModel() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? userModelString = prefs.getString('user name');
+    if (userModelString == null) return;
+    final Map<String, dynamic> userModelDecode = jsonDecode(userModelString);
+    userModel = UserModel.fromJson(userModelDecode);
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    _usernameExist();
+    _getUserModel();
   }
 
   @override
@@ -45,6 +50,7 @@ class _MyAppState extends State<MyApp> {
         splashFactory: NoSplash.splashFactory,
         scaffoldBackgroundColor: scaffoldBackgroundColor,
         appBarTheme: const AppBarTheme(
+          centerTitle: false,
           backgroundColor: scaffoldBackgroundColor,
           iconTheme: IconThemeData(color: Colors.white, size: 32),
           titleTextStyle: TextStyle(color: Colors.white, fontSize: 24),
@@ -56,7 +62,7 @@ class _MyAppState extends State<MyApp> {
         homeViewID: (context) => const HomeView(),
         newTaskViewID: (context) => const NewTaskView(),
       },
-      home: username == null ? const LoginView() : const MainView(),
+      home: userModel?.userName == null ? const LoginView() : const MainView(),
     );
   }
 }
