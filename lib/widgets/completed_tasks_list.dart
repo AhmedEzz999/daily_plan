@@ -29,7 +29,9 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
     final List<dynamic> taskListDecode = jsonDecode(tasksString);
     _toDoNormalTasksList = taskListDecode
         .map((element) => TaskModel.fromJson(element))
-        .toList().reversed.toList();
+        .toList()
+        .reversed
+        .toList();
     _loadCompletedTasksList();
   }
 
@@ -44,7 +46,9 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
     );
     _toDoHighPriorityTasksList = highPriorityTaskListDecode
         .map((element) => TaskModel.fromJson(element))
-        .toList().reversed.toList();
+        .toList()
+        .reversed
+        .toList();
     _loadCompletedTasksList();
   }
 
@@ -61,7 +65,9 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
     final prefs = await SharedPreferences.getInstance();
     final List<TaskModel> updateNormalTasksList = _allTasksList
         .where((task) => !task.isHighPriority)
-        .toList().reversed.toList();
+        .toList()
+        .reversed
+        .toList();
     final List<Map<String, dynamic>> updatedTaskList = updateNormalTasksList
         .map((task) => task.toJson())
         .toList();
@@ -72,7 +78,9 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
     final prefs = await SharedPreferences.getInstance();
     final List<TaskModel> updateHighPriorityTasksList = _allTasksList
         .where((task) => task.isHighPriority)
-        .toList().reversed.toList();
+        .toList()
+        .reversed
+        .toList();
     final List<Map<String, dynamic>> updatedTaskList =
         updateHighPriorityTasksList.map((task) => task.toJson()).toList();
     await prefs.setString('high priority tasks', jsonEncode(updatedTaskList));
@@ -93,7 +101,6 @@ class _CompletedTasksListState extends State<CompletedTasksList> {
             child: EmptyTasks(firstMessage: 'There is no completed tasks'),
           )
         : ListView.builder(
-            shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
             itemCount: _completedTasksList.length,
             itemBuilder: (context, index) => Container(

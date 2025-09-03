@@ -18,13 +18,16 @@ class TaskCheckBox extends StatefulWidget {
 class _TaskCheckBoxState extends State<TaskCheckBox> {
   @override
   Widget build(BuildContext context) {
-    return Transform.scale(
-      scale: 1.3,
-      child: Checkbox(
-        activeColor: primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        value: widget.isFinished,
-        onChanged: widget.onChanged,
+    return Material(
+      color: Colors.transparent,
+      child: Transform.scale(
+        scale: 1.3,
+        child: Checkbox(
+          activeColor: primaryColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          value: widget.isFinished,
+          onChanged: widget.onChanged,
+        ),
       ),
     );
   }

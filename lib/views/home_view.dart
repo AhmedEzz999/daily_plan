@@ -1,26 +1,80 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/constants.dart';
+import '../models/task_model.dart';
 import '../widgets/header_home_view.dart';
 import '../widgets/home_view_body.dart';
+import '../widgets/tasks_list.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  List<TaskModel> _highPriorityTasksList = [];
+  List<TaskModel> _normalTasksList = [];
+
+  void _loadHighPriorityTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? tasksString = prefs.getString('high priority tasks');
+    if (tasksString == null) return;
+    final List<dynamic> taskListDecode = jsonDecode(tasksString);
+    setState(() {
+      _highPriorityTasksList = taskListDecode
+          .map((element) => TaskModel.fromJson(element))
+          .toList()
+          .reversed
+          .toList();
+    });
+  }
+
+  void _loadNormalTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? tasksString = prefs.getString('normal tasks');
+    if (tasksString == null) return;
+    final List<dynamic> taskListDecode = jsonDecode(tasksString);
+    setState(() {
+      _normalTasksList = taskListDecode
+          .map((element) => TaskModel.fromJson(element))
+          .toList()
+          .reversed
+          .toList();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHighPriorityTasks();
+    _loadNormalTasks();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: CustomScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           slivers: [
-            SliverAppBar(
+            const SliverAppBar(
               pinned: true,
               toolbarHeight: 86,
               flexibleSpace: FlexibleSpaceBar(background: HeaderHomeView()),
             ),
-            SliverToBoxAdapter(child: HomeViewBody()),
+            HomeViewBody(
+              highPriorityTasksList: _highPriorityTasksList,
+              normalTasksList: _normalTasksList,
+            ),
+            TasksList(
+              allTasksList: [..._highPriorityTasksList, ..._normalTasksList],
+            ),
           ],
         ),
       ),

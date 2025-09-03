@@ -11,26 +11,26 @@ import 'task_check_box.dart';
 import 'unfinished_task_description.dart';
 import 'unfinished_task_name.dart';
 
-class NormalTasksList extends StatefulWidget {
-  const NormalTasksList({required this.normalTasksList, super.key});
-  final List<TaskModel> normalTasksList;
+class TasksList extends StatefulWidget {
+  const TasksList({required this.allTasksList, super.key});
+  final List<TaskModel> allTasksList;
 
   @override
-  State<NormalTasksList> createState() => _NormalTasksListState();
+  State<TasksList> createState() => _TasksListState();
 }
 
-class _NormalTasksListState extends State<NormalTasksList> {
+class _TasksListState extends State<TasksList> {
   @override
   Widget build(BuildContext context) {
-    return widget.normalTasksList.isEmpty
-        ? const EmptyTasks(
-            firstMessage: 'No Tasks',
-            secondMessage: 'Press + to add new task',
+    return widget.allTasksList.isEmpty
+        ? const SliverToBoxAdapter(
+            child: EmptyTasks(
+              firstMessage: 'No Tasks',
+              secondMessage: 'Press + to add new task',
+            ),
           )
-        : ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: widget.normalTasksList.length,
+        : SliverList.builder(
+            itemCount: widget.allTasksList.length,
             itemBuilder: (context, index) => Container(
               margin: const EdgeInsets.only(bottom: 14),
               height: 72,
@@ -43,19 +43,35 @@ class _NormalTasksListState extends State<NormalTasksList> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TaskCheckBox(
-                      isFinished: widget.normalTasksList[index].isFinished,
+                      isFinished: widget.allTasksList[index].isFinished,
                       onChanged: (value) async {
                         setState(() {
-                          widget.normalTasksList[index].isFinished = value!;
+                          widget.allTasksList[index].isFinished = value!;
                         });
                         final prefs = await SharedPreferences.getInstance();
-                        final List<Map<String, dynamic>> updatedTaskList =
-                            widget.normalTasksList
+                        final List<Map<String, dynamic>> updatedNormalTaskList =
+                            widget.allTasksList
+                                .where((task) => !task.isHighPriority)
+                                .toList()
                                 .map((task) => task.toJson())
-                                .toList().reversed.toList();
+                                .toList()
+                                .reversed
+                                .toList();
                         await prefs.setString(
                           'normal tasks',
-                          jsonEncode(updatedTaskList),
+                          jsonEncode(updatedNormalTaskList),
+                        );
+                        final List<Map<String, dynamic>>
+                        updatedHighPriorityTaskList = widget.allTasksList
+                            .where((task) => task.isHighPriority)
+                            .toList()
+                            .map((task) => task.toJson())
+                            .toList()
+                            .reversed
+                            .toList();
+                        await prefs.setString(
+                          'high priority tasks',
+                          jsonEncode(updatedHighPriorityTaskList),
                         );
                       },
                     ),
@@ -65,25 +81,23 @@ class _NormalTasksListState extends State<NormalTasksList> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        widget.normalTasksList[index].isFinished
+                        widget.allTasksList[index].isFinished
                             ? FinishedTaskName(
-                                taskName:
-                                    widget.normalTasksList[index].taskName,
+                                taskName: widget.allTasksList[index].taskName,
                               )
                             : UnfinishedTaskName(
-                                taskName:
-                                    widget.normalTasksList[index].taskName,
+                                taskName: widget.allTasksList[index].taskName,
                               ),
-                        widget.normalTasksList[index].taskDescription.isNotEmpty
-                            ? widget.normalTasksList[index].isFinished
+                        widget.allTasksList[index].taskDescription.isNotEmpty
+                            ? widget.allTasksList[index].isFinished
                                   ? FinishedTaskDescription(
                                       taskDescription: widget
-                                          .normalTasksList[index]
+                                          .allTasksList[index]
                                           .taskDescription,
                                     )
                                   : UnfinishedTaskDescription(
                                       taskDescription: widget
-                                          .normalTasksList[index]
+                                          .allTasksList[index]
                                           .taskDescription,
                                     )
                             : const SizedBox(),
@@ -93,7 +107,7 @@ class _NormalTasksListState extends State<NormalTasksList> {
                   IconButton(
                     icon: Icon(
                       Icons.more_vert,
-                      color: widget.normalTasksList[index].isFinished
+                      color: widget.allTasksList[index].isFinished
                           ? const Color(0xffA0A0A0)
                           : const Color(0xffC6C6C6),
                     ),

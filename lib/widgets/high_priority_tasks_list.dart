@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/constants.dart';
 import '../models/task_model.dart';
+import '../views/high_priority_tasks_view.dart';
 import 'finished_task_name.dart';
 import 'task_check_box.dart';
 import 'unfinished_task_name.dart';
@@ -47,7 +48,9 @@ class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: widget.highPriorityTasksList.length,
+                        itemCount: (widget.highPriorityTasksList.length > 4)
+                            ? 4
+                            : widget.highPriorityTasksList.length,
                         itemBuilder: (context, index) => Container(
                           height: 40,
                           decoration: const BoxDecoration(
@@ -72,7 +75,9 @@ class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
                                   final List<Map<String, dynamic>>
                                   updatedTaskList = widget.highPriorityTasksList
                                       .map((task) => task.toJson())
-                                      .toList().reversed.toList();
+                                      .toList()
+                                      .reversed
+                                      .toList();
                                   await prefs.setString(
                                     'high priority tasks',
                                     jsonEncode(updatedTaskList),
@@ -111,7 +116,17 @@ class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
                         shape: BoxShape.circle,
                       ),
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HighPriorityTasksView(
+                                highPriorityTasksList:
+                                    widget.highPriorityTasksList,
+                              ),
+                            ),
+                          );
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(3),
                           child: SvgPicture.asset(
