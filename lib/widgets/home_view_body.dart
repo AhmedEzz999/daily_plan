@@ -7,19 +7,17 @@ import 'progress_section.dart';
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({
     required this.highPriorityTasksList,
-    required this.normalTasksList,
+    required this.allTasksList,
     super.key,
   });
   final List<TaskModel> highPriorityTasksList;
-  final List<TaskModel> normalTasksList;
+  final List<TaskModel> allTasksList;
 
   @override
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildListDelegate([
-        ProgressSection(
-          allTasksList: [...highPriorityTasksList, ...normalTasksList],
-        ),
+        ProgressSection(allTasksList: allTasksList),
         const SizedBox(height: 16),
         HighPriorityTasksList(highPriorityTasksList: highPriorityTasksList),
         const SizedBox(height: 14),

@@ -20,6 +20,17 @@ class HighPriorityTasksList extends StatefulWidget {
 }
 
 class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
+  Future<void> updateHighPriorityTasksList() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<Map<String, dynamic>> updatedTaskList = widget
+        .highPriorityTasksList
+        .map((task) => task.toJson())
+        .toList()
+        .reversed
+        .toList();
+    await prefs.setString('high priority tasks', jsonEncode(updatedTaskList));
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.highPriorityTasksList.isEmpty
@@ -69,19 +80,8 @@ class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
                                             .highPriorityTasksList[index]
                                             .isFinished =
                                         value!;
+                                    updateHighPriorityTasksList();
                                   });
-                                  final prefs =
-                                      await SharedPreferences.getInstance();
-                                  final List<Map<String, dynamic>>
-                                  updatedTaskList = widget.highPriorityTasksList
-                                      .map((task) => task.toJson())
-                                      .toList()
-                                      .reversed
-                                      .toList();
-                                  await prefs.setString(
-                                    'high priority tasks',
-                                    jsonEncode(updatedTaskList),
-                                  );
                                 },
                               ),
                               Expanded(
@@ -121,8 +121,7 @@ class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => HighPriorityTasksView(
-                                highPriorityTasksList:
-                                    widget.highPriorityTasksList,
+                                allTasksList: widget.highPriorityTasksList,
                               ),
                             ),
                           );

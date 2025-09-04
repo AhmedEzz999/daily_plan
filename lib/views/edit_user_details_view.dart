@@ -1,6 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/preferences_manager.dart';
 import '../models/user_model.dart';
+import '../widgets/custom_snack_bar.dart';
 import '../widgets/motivation_quote_field.dart';
 import '../widgets/save_user_details_button.dart';
 import '../widgets/user_name_field.dart';
@@ -14,6 +19,7 @@ class EditUserDetailsView extends StatefulWidget {
 }
 
 class _EditUserDetailsViewState extends State<EditUserDetailsView> {
+  final GlobalKey<FormState> _editUserKey = GlobalKey();
   late TextEditingController _userNameController;
   late TextEditingController _motivationQuoteController;
 
@@ -50,6 +56,7 @@ class _EditUserDetailsViewState extends State<EditUserDetailsView> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Form(
+            key: _editUserKey,
             child: Column(
               children: [
                 Expanded(
@@ -74,7 +81,24 @@ class _EditUserDetailsViewState extends State<EditUserDetailsView> {
                     ],
                   ),
                 ),
-                SaveUserDetailsButton(onPressed: () async {}),
+                SaveUserDetailsButton(
+                  onPressed: () async {
+                    if (_editUserKey.currentState!.validate()) {
+                      final Map<String, dynamic> updatedUser = {
+                        'user name': _userNameController.text,
+                        'image source': widget.userModel!.imageSource,
+                        'motivation quote': _motivationQuoteController.text,
+                        'dark mode': widget.userModel!.darkMode,
+                      };
+                      final UserModel userModel = UserModel.fromJson(
+                        updatedUser,
+                      );
+                      await PreferencesManager().setUsername(jsonEncode(userModel));
+                      customSnackBar(context, 'User is updated successfully');
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
                 const SizedBox(height: 10),
               ],
             ),

@@ -9,7 +9,7 @@ class LogOutContainer extends StatelessWidget {
 
   Future<void> _logOut() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user name');
+    await prefs.clear();
   }
 
   @override
@@ -17,7 +17,11 @@ class LogOutContainer extends StatelessWidget {
     return ListTile(
       onTap: () {
         _logOut();
-        Navigator.pushReplacementNamed(context, loginViewID);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          loginViewID,
+          (route) => false,
+        );
       },
       contentPadding: const EdgeInsets.all(0),
       leading: SvgPicture.asset(

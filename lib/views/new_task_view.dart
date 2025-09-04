@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/preferences_manager.dart';
 import '../widgets/custom_snack_bar.dart';
 import '../widgets/new_task_body.dart';
 import '../widgets/save_task_button.dart';
@@ -35,35 +35,18 @@ class _NewTaskViewState extends State<NewTaskView> {
     super.dispose();
   }
 
-  void _addNormalTask() async {
-    final prefs = await SharedPreferences.getInstance();
+  void _addTask() async {
     final Map<String, dynamic> task = {
       'Task Name': _taskNameController.text,
       'Task Description': _taskDescriptionController.text,
       'High Priority': _isHighPriority,
     };
-    final String? tasksListEncode = prefs.getString('normal tasks');
+    final String? tasksListEncode = PreferencesManager().getAllTasks();
     if (tasksListEncode != null) {
       tasksList = jsonDecode(tasksListEncode);
     }
     tasksList.add(task);
-    await prefs.setString('normal tasks', jsonEncode(tasksList));
-  }
-
-  void _addHighPriorityTask() async {
-    final prefs = await SharedPreferences.getInstance();
-    final Map<String, dynamic> task = {
-      'Task Name': _taskNameController.text,
-      'Task Description': _taskDescriptionController.text,
-      'High Priority': _isHighPriority,
-      'is Finished': false,
-    };
-    final String? tasksListEncode = prefs.getString('high priority tasks');
-    if (tasksListEncode != null) {
-      tasksList = jsonDecode(tasksListEncode);
-    }
-    tasksList.add(task);
-    await prefs.setString('high priority tasks', jsonEncode(tasksList));
+    await PreferencesManager().setAllTasks(jsonEncode(tasksList));
   }
 
   @override
@@ -89,7 +72,7 @@ class _NewTaskViewState extends State<NewTaskView> {
               SaveTaskButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    _isHighPriority ? _addHighPriorityTask() : _addNormalTask();
+                    _addTask();
                     customSnackBar(context, 'Task Created Successfully');
                     Navigator.pop(context);
                   }

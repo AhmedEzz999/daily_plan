@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/preferences_manager.dart';
 import '../models/task_model.dart';
 import 'empty_tasks.dart';
 import 'finished_task_description.dart';
@@ -20,6 +20,15 @@ class TasksList extends StatefulWidget {
 }
 
 class _TasksListState extends State<TasksList> {
+  Future<void> _updateTasksList() async {
+    final List<TaskModel> updateNormalTasksList = widget.allTasksList.reversed
+        .toList();
+    final List<Map<String, dynamic>> updatedTaskList = updateNormalTasksList
+        .map((task) => task.toJson())
+        .toList();
+    await PreferencesManager().setAllTasks(jsonEncode(updatedTaskList));
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.allTasksList.isEmpty
@@ -48,31 +57,7 @@ class _TasksListState extends State<TasksList> {
                         setState(() {
                           widget.allTasksList[index].isFinished = value!;
                         });
-                        final prefs = await SharedPreferences.getInstance();
-                        final List<Map<String, dynamic>> updatedNormalTaskList =
-                            widget.allTasksList
-                                .where((task) => !task.isHighPriority)
-                                .toList()
-                                .map((task) => task.toJson())
-                                .toList()
-                                .reversed
-                                .toList();
-                        await prefs.setString(
-                          'normal tasks',
-                          jsonEncode(updatedNormalTaskList),
-                        );
-                        final List<Map<String, dynamic>>
-                        updatedHighPriorityTaskList = widget.allTasksList
-                            .where((task) => task.isHighPriority)
-                            .toList()
-                            .map((task) => task.toJson())
-                            .toList()
-                            .reversed
-                            .toList();
-                        await prefs.setString(
-                          'high priority tasks',
-                          jsonEncode(updatedHighPriorityTaskList),
-                        );
+                        await _updateTasksList();
                       },
                     ),
                   ),

@@ -22,12 +22,12 @@ class UserNameField extends StatelessWidget {
         return null;
       },
       controller: userNameController,
-      style: const TextStyle(color: Color(0xffC6C6C6), fontSize: 20),
-      cursorColor: const Color(0xffC6C6C6),
+      style: const TextStyle(color: Colors.white, fontSize: 20),
+      cursorColor: Colors.white,
       decoration: InputDecoration(
         filled: true,
         fillColor: const Color(0xFF282828),
-        hintText: 'Finish UI design for login screen',
+        hintText: 'Usama Elgendy',
         hintStyle: const TextStyle(fontSize: 18, color: Color(0xff6D6D6D)),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Color(0xff6E6E6E)),

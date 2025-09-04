@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/constants.dart';
+import '../models/preferences_manager.dart';
 import '../models/task_model.dart';
 import '../widgets/header_home_view.dart';
 import '../widgets/home_view_body.dart';
@@ -17,30 +17,14 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  List<TaskModel> _highPriorityTasksList = [];
-  List<TaskModel> _normalTasksList = [];
+  List<TaskModel> _allTasksList = [];
 
-  void _loadHighPriorityTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? tasksString = prefs.getString('high priority tasks');
+  void _loadAllTasks() async {
+    final String? tasksString = PreferencesManager().getAllTasks();
     if (tasksString == null) return;
     final List<dynamic> taskListDecode = jsonDecode(tasksString);
     setState(() {
-      _highPriorityTasksList = taskListDecode
-          .map((element) => TaskModel.fromJson(element))
-          .toList()
-          .reversed
-          .toList();
-    });
-  }
-
-  void _loadNormalTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? tasksString = prefs.getString('normal tasks');
-    if (tasksString == null) return;
-    final List<dynamic> taskListDecode = jsonDecode(tasksString);
-    setState(() {
-      _normalTasksList = taskListDecode
+      _allTasksList = taskListDecode
           .map((element) => TaskModel.fromJson(element))
           .toList()
           .reversed
@@ -51,8 +35,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    _loadHighPriorityTasks();
-    _loadNormalTasks();
+    _loadAllTasks();
   }
 
   @override
@@ -69,12 +52,12 @@ class _HomeViewState extends State<HomeView> {
               flexibleSpace: FlexibleSpaceBar(background: HeaderHomeView()),
             ),
             HomeViewBody(
-              highPriorityTasksList: _highPriorityTasksList,
-              normalTasksList: _normalTasksList,
+              highPriorityTasksList: _allTasksList
+                  .where((task) => task.isHighPriority)
+                  .toList(),
+              allTasksList: _allTasksList,
             ),
-            TasksList(
-              allTasksList: [..._highPriorityTasksList, ..._normalTasksList],
-            ),
+            TasksList(allTasksList: _allTasksList),
           ],
         ),
       ),

@@ -1,22 +1,36 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/preferences_manager.dart';
 import '../models/task_model.dart';
 import '../widgets/finished_task_name.dart';
 import '../widgets/task_check_box.dart';
 import '../widgets/unfinished_task_name.dart';
 
 class HighPriorityTasksView extends StatefulWidget {
-  const HighPriorityTasksView({required this.highPriorityTasksList, super.key});
-  final List<TaskModel> highPriorityTasksList;
+  const HighPriorityTasksView({required this.allTasksList, super.key});
+  final List<TaskModel> allTasksList;
 
   @override
   State<HighPriorityTasksView> createState() => _HighPriorityTasksViewState();
 }
 
 class _HighPriorityTasksViewState extends State<HighPriorityTasksView> {
+  List<TaskModel> highPriorityTasksList = [];
+
+  void _loadHighPriorityTasks() {
+    highPriorityTasksList = widget.allTasksList
+        .where((task) => task.isHighPriority)
+        .toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHighPriorityTasks();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +39,7 @@ class _HighPriorityTasksViewState extends State<HighPriorityTasksView> {
         padding: const EdgeInsets.all(16),
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
-          itemCount: widget.highPriorityTasksList.length,
+          itemCount: highPriorityTasksList.length,
           itemBuilder: (context, index) => Container(
             height: 70,
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -37,33 +51,29 @@ class _HighPriorityTasksViewState extends State<HighPriorityTasksView> {
             child: Row(
               children: [
                 TaskCheckBox(
-                  isFinished: widget.highPriorityTasksList[index].isFinished,
+                  isFinished: highPriorityTasksList[index].isFinished,
                   onChanged: (value) async {
                     setState(() {
-                      widget.highPriorityTasksList[index].isFinished = value!;
+                      highPriorityTasksList[index].isFinished = value!;
                     });
-                    final prefs = await SharedPreferences.getInstance();
                     final List<Map<String, dynamic>> updatedTaskList = widget
-                        .highPriorityTasksList
+                        .allTasksList
                         .map((task) => task.toJson())
                         .toList()
                         .reversed
                         .toList();
-                    await prefs.setString(
-                      'high priority tasks',
+                    await PreferencesManager().setAllTasks(
                       jsonEncode(updatedTaskList),
                     );
                   },
                 ),
                 Expanded(
-                  child: widget.highPriorityTasksList[index].isFinished
+                  child: highPriorityTasksList[index].isFinished
                       ? FinishedTaskName(
-                          taskName:
-                              widget.highPriorityTasksList[index].taskName,
+                          taskName: highPriorityTasksList[index].taskName,
                         )
                       : UnfinishedTaskName(
-                          taskName:
-                              widget.highPriorityTasksList[index].taskName,
+                          taskName: highPriorityTasksList[index].taskName,
                         ),
                 ),
               ],

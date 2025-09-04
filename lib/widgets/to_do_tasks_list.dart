@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/preferences_manager.dart';
 import '../models/task_model.dart';
 import 'empty_tasks.dart';
 import 'finished_task_description.dart';
@@ -17,84 +17,46 @@ class ToDoTasksList extends StatefulWidget {
 }
 
 class _ToDoTasksListState extends State<ToDoTasksList> {
-  List<TaskModel> _normalTasksList = [];
-  List<TaskModel> _highPriorityTasksList = [];
   List<TaskModel> _allTasksList = [];
   List<TaskModel> _toDoTasksList = [];
 
-  void _loadNormalTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? tasksString = prefs.getString('normal tasks');
-    if (tasksString == null) return;
-    final List<dynamic> taskListDecode = jsonDecode(tasksString);
-    _normalTasksList = taskListDecode
+  void _loadAllTasksList() {
+    final String? allTasksString = PreferencesManager().getAllTasks();
+    if (allTasksString == null) return;
+    final List<dynamic> allTaskListDecode = jsonDecode(allTasksString);
+    _allTasksList = allTaskListDecode
         .map((element) => TaskModel.fromJson(element))
         .toList()
         .reversed
         .toList();
-    _loadToDoTasksList();
-  }
-
-  void _loadHighPriorityTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? highPriorityTasksString = prefs.getString(
-      'high priority tasks',
-    );
-    if (highPriorityTasksString == null) return;
-    final List<dynamic> highPriorityTaskListDecode = jsonDecode(
-      highPriorityTasksString,
-    );
-    _highPriorityTasksList = highPriorityTaskListDecode
-        .map((element) => TaskModel.fromJson(element))
-        .toList()
-        .reversed
-        .toList();
-    _loadToDoTasksList();
   }
 
   void _loadToDoTasksList() {
-    setState(() {
-      _allTasksList = [..._highPriorityTasksList, ..._normalTasksList];
       _toDoTasksList = _allTasksList.where((task) => !task.isFinished).toList();
-    });
   }
 
-  void _updateNormalTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<TaskModel> updateNormalTasksList = _allTasksList
-        .where((task) => !task.isHighPriority)
-        .toList()
-        .reversed
+  void _updateTasksList() async {
+    final List<TaskModel> updateNormalTasksList = _allTasksList.reversed
         .toList();
     final List<Map<String, dynamic>> updatedTaskList = updateNormalTasksList
         .map((task) => task.toJson())
         .toList();
-    await prefs.setString('normal tasks', jsonEncode(updatedTaskList));
-  }
-
-  void _updateHighPriorityTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<TaskModel> updateHighPriorityTasksList = _allTasksList
-        .where((task) => task.isHighPriority)
-        .toList()
-        .reversed
-        .toList();
-    final List<Map<String, dynamic>> updatedTaskList =
-        updateHighPriorityTasksList.map((task) => task.toJson()).toList();
-    await prefs.setString('high priority tasks', jsonEncode(updatedTaskList));
+    await PreferencesManager().setAllTasks(jsonEncode(updatedTaskList));
   }
 
   @override
   void initState() {
     super.initState();
-    _loadNormalTasks();
-    _loadHighPriorityTasks();
+    _loadAllTasksList();
+    _loadToDoTasksList();
   }
 
   @override
   Widget build(BuildContext context) {
     return _toDoTasksList.isEmpty
-        ? const EmptyTasks(firstMessage: 'There is no to-do tasks')
+        ? const Center(
+            child: EmptyTasks(firstMessage: 'There is no to-do tasks'),
+          )
         : ListView.builder(
             physics: const BouncingScrollPhysics(),
             itemCount: _toDoTasksList.length,
@@ -115,13 +77,8 @@ class _ToDoTasksListState extends State<ToDoTasksList> {
                         onChanged: (value) {
                           setState(() {
                             _toDoTasksList[index].isFinished = value!;
-                            if (_toDoTasksList[index].isHighPriority) {
-                              _updateHighPriorityTasks();
-                              _loadHighPriorityTasks();
-                            } else {
-                              _updateNormalTasks();
-                              _loadNormalTasks();
-                            }
+                            _updateTasksList();
+                            _loadToDoTasksList();
                           });
                         },
                       ),

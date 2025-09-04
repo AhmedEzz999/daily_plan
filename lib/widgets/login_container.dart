@@ -31,7 +31,7 @@ class _LoginContainerState extends State<LoginContainer> {
         LoginForm(formKey: _formKey, isTyping: isTyping),
         const SizedBox(height: 24),
         LoginButton(
-          onPressed: () async {
+          onPressed: () {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
               customSnackBar(context, 'Valid Username');

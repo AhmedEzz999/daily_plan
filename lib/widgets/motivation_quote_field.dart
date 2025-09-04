@@ -13,8 +13,8 @@ class MotivationQuoteField extends StatelessWidget {
       minLines: 6,
       maxLines: 8,
       controller: motivationQuoteController,
-      style: const TextStyle(color: Color(0xffC6C6C6), fontSize: 20),
-      cursorColor: const Color(0xffC6C6C6),
+      style: const TextStyle(color: Colors.white, fontSize: 20),
+      cursorColor: Colors.white,
       decoration: InputDecoration(
         filled: true,
         fillColor: const Color(0xFF282828),

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants/constants.dart';
+import 'models/preferences_manager.dart';
 import 'models/user_model.dart';
 import 'views/home_view.dart';
 import 'views/login_view.dart';
@@ -26,8 +26,8 @@ class _MyAppState extends State<MyApp> {
   UserModel? userModel;
 
   Future<void> _getUserModel() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? userModelString = prefs.getString('user name');
+    await PreferencesManager().init();
+    final String? userModelString = PreferencesManager().getUsername();
     if (userModelString == null) return;
     final Map<String, dynamic> userModelDecode = jsonDecode(userModelString);
     setState(() {

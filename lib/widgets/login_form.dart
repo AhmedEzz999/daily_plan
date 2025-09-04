@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/preferences_manager.dart';
 import '../models/user_model.dart';
 
 class LoginForm extends StatelessWidget {
@@ -11,11 +11,10 @@ class LoginForm extends StatelessWidget {
   final bool isTyping;
 
   Future<void> _saveUserName(String userName) async {
-    final prefs = await SharedPreferences.getInstance();
     final Map<String, dynamic> userNameJson = {'user name': userName};
     final UserModel userModel = UserModel.fromJson(userNameJson);
     final String userNameEncode = jsonEncode(userModel);
-    await prefs.setString('user name', userNameEncode);
+    await PreferencesManager().setUsername(userNameEncode);
   }
 
   bool isValidUsername(String userName) {

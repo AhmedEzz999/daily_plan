@@ -69,7 +69,7 @@ class TaskProgressIndicator extends StatelessWidget {
                 Text(
                   '${(progress * 100).toInt()}%',
                   style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),
