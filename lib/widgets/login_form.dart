@@ -11,8 +11,14 @@ class LoginForm extends StatelessWidget {
   final bool isTyping;
 
   Future<void> _saveUserName(String userName) async {
-    final Map<String, dynamic> userNameJson = {'user name': userName};
-    final UserModel userModel = UserModel.fromJson(userNameJson);
+    UserModel? userModel;
+    final Map<String, dynamic> userNameJson = {
+      'user name': userName,
+      'image source': null,
+      'motivation quote': null,
+      'dark mode': null,
+    };
+    userModel = UserModel.fromJson(userNameJson);
     final String userNameEncode = jsonEncode(userModel);
     await PreferencesManager().setUsername(userNameEncode);
   }

@@ -12,33 +12,20 @@ import 'views/new_task_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await PreferencesManager().init();
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  UserModel? userModel;
-
-  Future<void> _getUserModel() async {
-    await PreferencesManager().init();
+  UserModel? _getUserModel() {
+    UserModel? userModel;
     final String? userModelString = PreferencesManager().getUsername();
-    if (userModelString == null) return;
+    if (userModelString == null) return userModel;
     final Map<String, dynamic> userModelDecode = jsonDecode(userModelString);
-    setState(() {
-      userModel = UserModel.fromJson(userModelDecode);
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserModel();
+    userModel = UserModel.fromJson(userModelDecode);
+    return userModel;
   }
 
   @override
@@ -91,7 +78,7 @@ class _MyAppState extends State<MyApp> {
         homeViewID: (context) => const HomeView(),
         newTaskViewID: (context) => const NewTaskView(),
       },
-      home: userModel == null ? const LoginView() : const MainView(),
+      home: _getUserModel() == null ? const LoginView() : const MainView(),
     );
   }
 }

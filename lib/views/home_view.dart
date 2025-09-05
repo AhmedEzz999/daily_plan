@@ -52,9 +52,6 @@ class _HomeViewState extends State<HomeView> {
               flexibleSpace: FlexibleSpaceBar(background: HeaderHomeView()),
             ),
             HomeViewBody(
-              highPriorityTasksList: _allTasksList
-                  .where((task) => task.isHighPriority)
-                  .toList(),
               allTasksList: _allTasksList,
             ),
             TasksList(allTasksList: _allTasksList),

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/constants.dart';
+import '../models/preferences_manager.dart';
 import '../models/task_model.dart';
 import '../views/high_priority_tasks_view.dart';
 import 'finished_task_name.dart';
@@ -12,28 +12,43 @@ import 'task_check_box.dart';
 import 'unfinished_task_name.dart';
 
 class HighPriorityTasksList extends StatefulWidget {
-  const HighPriorityTasksList({required this.highPriorityTasksList, super.key});
-  final List<TaskModel> highPriorityTasksList;
+  const HighPriorityTasksList({required this.allTasksList, super.key});
+  final List<TaskModel> allTasksList;
 
   @override
   State<HighPriorityTasksList> createState() => _HighPriorityTasksListState();
 }
 
 class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
-  Future<void> updateHighPriorityTasksList() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<Map<String, dynamic>> updatedTaskList = widget
-        .highPriorityTasksList
+  List<TaskModel> highPriorityTasksList = [];
+
+  void _loadHighPriorityTasksList() {
+    highPriorityTasksList = widget.allTasksList
+        .where((task) => task.isHighPriority)
+        .toList();
+  }
+
+  void updateTasksList() async {
+    final List<Map<String, dynamic>> updatedTaskList = widget.allTasksList
         .map((task) => task.toJson())
         .toList()
         .reversed
         .toList();
-    await prefs.setString('high priority tasks', jsonEncode(updatedTaskList));
+    await PreferencesManager().setAllTasks(jsonEncode(updatedTaskList));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHighPriorityTasksList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.highPriorityTasksList.isEmpty
+    return widget.allTasksList
+            .where((task) => task.isHighPriority)
+            .toList()
+            .isEmpty
         ? const SizedBox()
         : Container(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -59,9 +74,9 @@ class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: (widget.highPriorityTasksList.length > 4)
+                        itemCount: (highPriorityTasksList.length > 4)
                             ? 4
-                            : widget.highPriorityTasksList.length,
+                            : highPriorityTasksList.length,
                         itemBuilder: (context, index) => Container(
                           height: 40,
                           decoration: const BoxDecoration(
@@ -71,32 +86,24 @@ class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
                           child: Row(
                             children: [
                               TaskCheckBox(
-                                isFinished: widget
-                                    .highPriorityTasksList[index]
-                                    .isFinished,
+                                isFinished:
+                                    highPriorityTasksList[index].isFinished,
                                 onChanged: (value) async {
                                   setState(() {
-                                    widget
-                                            .highPriorityTasksList[index]
-                                            .isFinished =
+                                    highPriorityTasksList[index].isFinished =
                                         value!;
-                                    updateHighPriorityTasksList();
+                                    updateTasksList();
                                   });
                                 },
                               ),
                               Expanded(
-                                child:
-                                    widget
-                                        .highPriorityTasksList[index]
-                                        .isFinished
+                                child: highPriorityTasksList[index].isFinished
                                     ? FinishedTaskName(
-                                        taskName: widget
-                                            .highPriorityTasksList[index]
+                                        taskName: highPriorityTasksList[index]
                                             .taskName,
                                       )
                                     : UnfinishedTaskName(
-                                        taskName: widget
-                                            .highPriorityTasksList[index]
+                                        taskName: highPriorityTasksList[index]
                                             .taskName,
                                       ),
                               ),
@@ -121,7 +128,7 @@ class _HighPriorityTasksListState extends State<HighPriorityTasksList> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => HighPriorityTasksView(
-                                allTasksList: widget.highPriorityTasksList,
+                                allTasksList: widget.allTasksList,
                               ),
                             ),
                           );

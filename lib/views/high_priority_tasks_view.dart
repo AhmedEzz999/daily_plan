@@ -25,6 +25,15 @@ class _HighPriorityTasksViewState extends State<HighPriorityTasksView> {
         .toList();
   }
 
+  void updateTasksList() async {
+    final List<Map<String, dynamic>> updatedTaskList = widget.allTasksList
+        .map((task) => task.toJson())
+        .toList()
+        .reversed
+        .toList();
+    await PreferencesManager().setAllTasks(jsonEncode(updatedTaskList));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -56,15 +65,7 @@ class _HighPriorityTasksViewState extends State<HighPriorityTasksView> {
                     setState(() {
                       highPriorityTasksList[index].isFinished = value!;
                     });
-                    final List<Map<String, dynamic>> updatedTaskList = widget
-                        .allTasksList
-                        .map((task) => task.toJson())
-                        .toList()
-                        .reversed
-                        .toList();
-                    await PreferencesManager().setAllTasks(
-                      jsonEncode(updatedTaskList),
-                    );
+                    updateTasksList();
                   },
                 ),
                 Expanded(

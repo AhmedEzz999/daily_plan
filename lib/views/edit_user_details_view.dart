@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/preferences_manager.dart';
 import '../models/user_model.dart';
@@ -93,7 +92,9 @@ class _EditUserDetailsViewState extends State<EditUserDetailsView> {
                       final UserModel userModel = UserModel.fromJson(
                         updatedUser,
                       );
-                      await PreferencesManager().setUsername(jsonEncode(userModel));
+                      await PreferencesManager().setUsername(
+                        jsonEncode(userModel),
+                      );
                       customSnackBar(context, 'User is updated successfully');
                       Navigator.pop(context);
                     }
